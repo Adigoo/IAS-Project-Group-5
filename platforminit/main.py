@@ -25,31 +25,34 @@ def init():
     logging.debug('Received Request as {data}'.format(data=dataFromRequest))
     serviceInitStatus = {}
     logging.debug('============Initializing Platform for Hackathon 2===============')
+    availablePortNumbers = ['8001','8002','8003','8004','8005','8006','8007','8008']
     for service in platform_services:
         logging.debug('Platform Initilizer : Starting {serviceName}'.format(serviceName=service))
+
         try:
             logging.debug('Doing something for {serviceName}'.format(serviceName = service))
+            portNumber = availablePortNumbers.pop()
             if service == constants.SERVICE_NODEMANAGER:
-                node_manager.execute()
+                node_manager.execute(portNumber)
             elif service == constants.SERVICE_ACTION_MANAGER:
-                action_manager.execute()
+                action_manager.execute(portNumber)
             elif service == constants.SERVICE_APPLICATION_MANAGER:
-                app_manager.execute()
+                app_manager.execute(portNumber)
             elif service == constants.SERVICE_DEPLOYER:
-                deployer.execute()
+                deployer.execute(portNumber)
             elif service == constants.SERVICE_MESSAGE_BUS:
-                kafka.execute()
+                kafka.execute(portNumber)
             elif service == constants.SERVICE_MODEL_MANAGER:
-                model_manager.execute()
+                model_manager.execute(portNumber)
             elif service == constants.SERVICE_SCHEDULER:
-                scheduler.execute()
+                scheduler.execute(portNumber)
             elif service == constants.SERVICE_SENSOR_MANAGER:
-                sensor_manager.execute()
+                sensor_manager.execute(portNumber)
             else:
                 raise Exception('Service Handler not found for {serviceName}'.format(serviceName=service))
             
-            logging.debug('Platform Initilizer : Loading {serviceName} - Completed'.format(serviceName=service))
-            serviceInitStatus[service]=constants.SUCCESS
+            logging.debug('Platform Initilizer : Loading {serviceName} - Completed at port {port}'.format(serviceName=service,port=portNumber))
+            serviceInitStatus[service]={"status":constants.SUCCESS,"port":portNumber}
         except:
             serviceInitStatus[service]=constants.FAILURE
             logging.error('Platform Initilizer : Failed Loading {serviceName} Check Platform initializer logs for more details'.format(serviceName=service))

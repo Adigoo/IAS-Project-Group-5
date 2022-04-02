@@ -6,4 +6,5 @@ Flask-Script
 Flask-Cors
 requests
 mysqlclient
-
+pyyaml
+python_on_whales
