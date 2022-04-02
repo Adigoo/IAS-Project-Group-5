@@ -1,0 +1,11 @@
+SERVICE_NODEMANAGER='node_manager'
+SERVICE_SENSOR_MANAGER = 'sensor_manager'
+SERVICE_APPLICATION_MANAGER = 'app_manager'
+SERVICE_MODEL_MANAGER = 'model_manager'
+SERVICE_DEPLOYER = 'deployer'
+SERVICE_ACTION_MANAGER = 'action_manager'
+SERVICE_SCHEDULER = 'scheduler'
+SERVICE_MESSAGE_BUS = 'kafka'
+
+SUCCESS = 'success'
+FAILURE = 'failure'
