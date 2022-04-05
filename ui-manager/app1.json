@@ -1,0 +1,18 @@
+{
+    "application-name": "ada",
+    "age": "nakda",
+    "start-time": "12:12:15",
+    "end-time": "12:20:12",
+    "sensors": [
+        {
+            "type": "s1",
+            "location": "c1"
+        }
+    ],
+    "controllers": [
+        {
+            "type": "cs1",
+            "location": "gmhc"
+        }
+    ]
+}
