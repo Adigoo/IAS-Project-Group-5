@@ -9,8 +9,9 @@ from time import sleep
 
 while(1):
     data = api.getSensorData()
+    temperature = data
     data = np.reshape(np.array(data), (-1, 1))
     prediction = api.predict(data)
     output = api.controllerAction(prediction[0])
-    print(output)
+    print("Temperature is:", temperature, "and action taken:", output)
     sleep(60)
