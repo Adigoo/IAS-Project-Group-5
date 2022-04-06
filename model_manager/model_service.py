@@ -1,40 +1,55 @@
 from flask import Flask, jsonify, request, render_template, session
-from flask_sqlalchemy import SQLAlchemy
-from flask_restful import Api, Resource
-import requests
+from flask_pymongo import PyMongo
 from flask import Flask, request, redirect, url_for, flash, render_template
 import os
 from werkzeug.utils import secure_filename
 from zipfile import ZipFile
 import json
-from flask_login import LoginManager, UserMixin
-import csv
 import pickle
 import numpy as np
 
+from azurerepo2 import create_directory, upload_local_file
+
+from azure.core.exceptions import (
+    ResourceExistsError,
+    ResourceNotFoundError
+)
+
+from azure.storage.fileshare import (
+    ShareServiceClient,
+    ShareClient,
+    ShareDirectoryClient,
+    ShareFileClient
+)
+
+share_name = "ias-storage"
+connection_string = "DefaultEndpointsProtocol=https;AccountName=iasproject;AccountKey=QmnE09E9Cl6ywPk8J31StPn5rKPy+GnRNtx3M5VC5YZCxAcv8SeoUHD2o1w6nI1cDXgpPxwx1D9Q18bGcgiosQ==;EndpointSuffix=core.windows.net"
+
+# Create a ShareServiceClient from a connection string
+service_client = ShareServiceClient.from_connection_string(connection_string)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:0548@localhost/app'
-db = SQLAlchemy(app)
+app.config['MONGO_URI'] = "mongodb+srv://ias_mongo_user:ias_password@cluster0.doy4v.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+app.config['SECRET_KEY'] = "SuperSecretKey"
+
+mongo_db = PyMongo(app)
+db = mongo_db.db
 
 ALLOWED_EXTENSIONS = set(['zip'])
 
+def download_azure_file(connection_string, share_name, dir_name, file_name):
+    try:
 
-class ModelDb(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    model_name = db.Column(db.String(80), nullable=False)
-    model_type = db.Column(db.String(80), nullable=False)
-    input_data = db.Column(db.String(80))
-    output_data = db.Column(db.String(80))
-    url = db.Column(db.String(80))
+        source_file_path = dir_name + "/" + file_name
 
-    def __init__(self, model_name, model_type, input_data, output_data, url):
-        self.model_name = model_name
-        self.model_type = model_type
-        self.input_data = input_data
-        self.output_data = output_data
-        self.url = url
+        file_client = ShareFileClient.from_connection_string(
+            connection_string, share_name, source_file_path)
 
+        stream = file_client.download_file()
+        return stream.readall()
+
+    except ResourceNotFoundError as ex:
+        print("ResourceNotFoundError:", ex.message)
 
 @app.route('/')
 def home_page():
@@ -55,8 +70,18 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def validateZip():
-    pass
+def validate_Zip(zipObj):
+    countjson = 0
+    countpy = 0
+    listOfiles = zipObj.namelist()
+    for elem in listOfiles:
+        if elem.endswith('.json'):
+            countjson += 1
+        if elem.endswith('.pkl'):
+            countpy += 1
+    if (countjson != 1 or countpy != 1):
+        return 0
+    return 1
 
 
 def uploadConfig(file_path):
@@ -72,72 +97,60 @@ def uploadConfig(file_path):
         zip_obj = ZipFile(file_path, 'r')
         model_json_obj = zip_obj.open(model_file_name)
         json_data = json.load(model_json_obj)
+        json_data['_id'] = json_data['model_name']
         print(json_data)
+        try:
+            db.model.insert_one(json_data)
+        except:
+            os.remove(file_path)
 
-        model_data = json_data['model'][0]
-        name = model_data['model_name']
-        type = model_data['model_type']
-        input = ''
-        output = ''
-        url = 'localhost:5003'
-        obj = ModelDb(model_name=name, model_type=type,
-                      input_data=input, output_data=output, url=url)
-        db.session.add(obj)
-        db.session.commit()
-
-    '''
-    {'model': [{'model_name': 'modelA', 'model_type': 'type1'}]}
-    model_data = []
-
-    for j_data in json_data['model']:
-        model_data.append(j_data['model_type'])
-    print(model_data)'''
+    return
 
 
 @app.route('/upload_model', methods=['POST', 'GET'])
 def uploadModel():
     if request.method == 'POST':
-        UPLOAD_FOLDER = os.path.dirname(os.path.realpath(__file__))
-        UPLOAD_FOLDER = UPLOAD_FOLDER + "/Model_repository"
-
-        # File is not uploaded by the user
         if 'file' not in request.files:
-            flash('No file path')
+            flash('No file part')
             return redirect(request.url)
-
         file = request.files['file']
-
-        # if user does not select file, browser also
-        # submit a empty part without filename
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
-
-        print("File uploaded")
         # Provided file path
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            share_client = ShareClient.from_connection_string(connection_string, share_name)
+            flag = True
+            for item in list(share_client.list_directories_and_files('model_repo')):
+                print(item['name'])
+                if item["is_directory"]:
+                    print("Directory:", item["name"])
+                    if item["name"] == filename.split('.')[0]:
+                        flag = False
+            if flag:
+                zipfile = ZipFile(file._file)
+                if validate_Zip(zipfile):
+                    create_directory(connection_string, share_name, 'model_repo/' + filename.split('.')[0])
+                    print(zipfile.namelist())
+                    fileslist = zipfile.namelist()[1:]
+                    for name in fileslist:
+                        print(name)
+                        newfile = zipfile.read(name)
+                        print('application_repo/' + name)
+                        upload_local_file(connection_string, newfile, share_name, 'model_repo/' + name)
+                        if name.split('/')[1] == "model_config.json": 
+                            json_data = json.loads(newfile.decode('utf-8'))
+                            print(json_data)
+                            json_data['_id'] = json_data['model_name']
+                            db.model.insert_one(json_data)
+                else:
+                    return "Improper Zip format"
+            else:
+                return "Model with similar name already exists."
+            return redirect(url_for('uploadModel'))
 
-            ######
-            #directory = str(filename)
-
-            #path = os.path.join(UPLOAD_FOLDER, directory)
-
-            # Create the directory
-            if not os.path.exists(UPLOAD_FOLDER):
-                os.makedirs(UPLOAD_FOLDER)
-            ######
-
-            file.save(os.path.join(UPLOAD_FOLDER, filename))
-            unzip_folder = os.path.join(UPLOAD_FOLDER, filename)
-            # upload unzipped folder
-
-            zip_ref = ZipFile(unzip_folder, 'r')
-            zip_ref.extractall(UPLOAD_FOLDER)
-            zip_ref.close()
-
-            uploadConfig(os.path.join(UPLOAD_FOLDER, filename))
-            return redirect(url_for('uploadModel', filename=filename))
+        return render_template('index.html')
 
     return render_template('index.html')
 
@@ -148,20 +161,8 @@ def predictOutput():
     model_name = json_data['model_name']
     ip_data = json_data['data']
     ip_data = np.array(ip_data)
-    #print( csv_file_path )
-    # csv_file = open(csv_file_path)
-    # csv_reader = csv.reader( csv_file )
-    # rows = []
-    # for row in csv_reader:
-    #     #print(type(row), row, len(row))
-    #     rows.append(int(row[0]))
-    # print( rows )
 
-    # Loading model
-    cur_directory = os.getcwd()
-    new_path = cur_directory + '/Model_repository/' + \
-        model_name + '/' + model_name + '.pkl'
-    pickle_file = open(new_path, 'rb')
+    pickle_file = download_azure_file(connection_string, share_name,"iasdir", model_name)
     AI_model = pickle.load(pickle_file)
 
     # Prediction
@@ -177,5 +178,4 @@ def predictOutput():
 
 
 if __name__ == '__main__':
-    db.create_all()
-    app.run(host="0.0.0.0", debug=True, port=5003)
+    app.run(debug=True, port=5003)
