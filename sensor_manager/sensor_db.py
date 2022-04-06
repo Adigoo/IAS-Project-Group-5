@@ -6,10 +6,21 @@ import threading
 import sensor_data
 from pydoc import doc
 
-client = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = client["SensorDatabase"]
+
+client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
+db_name = "ias_database"
+client = pymongo.MongoClient(client)
+mydb = client[db_name]
 instancesdb = mydb["SensorInstances"]
+
+
+
+
+# client = pymongo.MongoClient("mongodb://localhost:27017/")
+# mydb = client["SensorDatabase"]
+# instancesdb = mydb["SensorInstances"]
 # types = mydb["SensorTypes"]
+
 
 # Deprecated
 # def register_sensor_type(sensor_type):
@@ -20,16 +31,21 @@ instancesdb = mydb["SensorInstances"]
 
 def databaseExists():
     databases = client.list_database_names()
-    if 'SensorDatabase' in databases:
-        return True
-    else:
-        return False
+    # if 'SensorDatabase' in databases:
+    if db_name in databases:
+        # return True
+        for collection in mydb.list_collection_names():
+            if collection == 'SensorInstances':
+                return True
+    # else:
+    return False
         # register_sensors_from_json('sensor_config.json')
 
 
 def drop_db():
     instancesdb.drop()
-    client.drop_database("SensorDatabase")
+    # client.drop_database("SensorDatabase")
+    client.drop_database(mydb)
 
 
 def getCount(collectionObj):

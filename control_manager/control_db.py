@@ -6,16 +6,26 @@ import pymongo
 import threading
 from pydoc import doc
 
-client = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = client["SensorDatabase"]
+
+client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
+db_name = "ias_database"
+client = pymongo.MongoClient(client)
+mydb = client[db_name]
 instancesdb = mydb["ControlInstances"]
+
+
+
+# client = pymongo.MongoClient("mongodb://localhost:27017/")
+# mydb = client["SensorDatabase"]
+# instancesdb = mydb["ControlInstances"]
 
 ################################ DATABASE CREATION and DROPPING ################################
 
 
 def databaseExists():
     databases = client.list_database_names()
-    if 'SensorDatabase' in databases:
+    # if 'SensorDatabase' in databases:
+    if db_name in databases:
         for collection in mydb.list_collection_names():
             if collection == 'ControlInstances':
                 return True
@@ -25,7 +35,8 @@ def databaseExists():
 
 def drop_db():
     instancesdb.drop()
-    client.drop_database("SensorDatabase")
+    # client.drop_database("SensorDatabase")
+    client.drop_database(db_name)
 
 
 def getCount(collectionObj):

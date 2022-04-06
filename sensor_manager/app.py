@@ -83,7 +83,7 @@ def getAllSensorInstances():
 
 if __name__ == "__main__":
     if sensor_db.databaseExists() == False:
-        print("DATABASE CREATED...")
+        print("Sensor Collection CREATED...")
         sensor_manager.register_sensors_from_json("sensor_config.json")
     else:
         print("DATABASE ALREADY EXISTS...")
