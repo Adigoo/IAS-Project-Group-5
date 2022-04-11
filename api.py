@@ -2,9 +2,9 @@ import requests
 import json
 import random
 
-sensor_url = 'http://localhost:5000/'
-control_url = 'http://localhost:6000/'
-model_url = 'http://localhost:5003/'
+# sensor_url = 'http://localhost:5000/'
+# control_url = 'http://localhost:6000/'
+# model_url = 'http://localhost:5003/'
 model_name = "ac_prediction_model"
 
 
@@ -21,7 +21,8 @@ def readFromFile(path, key):
 
 def get_public_ip():
     # resp = requests.get("http://api.ipify.org/").content.decode()
-    return "172.17.0.1"
+    # return "172.17.0.1"
+    return "OPEN API"
 
 
 def getSensorInstances(path="ac_app.json"):

@@ -14,7 +14,7 @@
         "sensor_location": "vindhya-block"
     },
     "model_details": {
-        "model_name": "ac_prediction_model",
+        "model_name": "l",
         "model_ip": "127.0.0.1",
         "model_port": "5003"
     }

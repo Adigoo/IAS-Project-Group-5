@@ -1,3 +1,4 @@
+from asyncio import subprocess
 from flask import Flask, request, url_for, render_template, jsonify, session, flash, redirect
 from flask_pymongo import PyMongo
 from io import BytesIO
@@ -20,6 +21,14 @@ from azure.storage.fileshare import (
     ShareDirectoryClient,
     ShareFileClient
 )
+import pymongo, shutil
+
+client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
+db_name = "ias_database"
+client = pymongo.MongoClient(client)
+mydb = client[db_name]
+services_config_coll = mydb["services_config"]
+
 
 share_name = "ias-storage"
 connection_string = "DefaultEndpointsProtocol=https;AccountName=iasproject;AccountKey=QmnE09E9Cl6ywPk8J31StPn5rKPy+GnRNtx3M5VC5YZCxAcv8SeoUHD2o1w6nI1cDXgpPxwx1D9Q18bGcgiosQ==;EndpointSuffix=core.windows.net"
@@ -28,7 +37,7 @@ connection_string = "DefaultEndpointsProtocol=https;AccountName=iasproject;Accou
 service_client = ShareServiceClient.from_connection_string(connection_string)
 
 app = Flask(__name__)
-app.config['MONGO_URI'] = "mongodb+srv://ias_mongo_user:ias_password@cluster0.doy4v.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+app.config['MONGO_URI'] = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
 app.config['SECRET_KEY'] = "SuperSecretKey"
 
 mongo_db = PyMongo(app)
@@ -43,7 +52,7 @@ def print_val():
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def validate_Zip(zipObj):
+def validate_Zip_app_service(zipObj):
     countjson = 0
     countpy = 0
     listOfiles = zipObj.namelist()
@@ -63,10 +72,17 @@ def upload_application():
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
+        
+
+
         file = request.files['file']
+
+
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
+        
+
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             share_client = ShareClient.from_connection_string(connection_string, share_name)
@@ -78,8 +94,17 @@ def upload_application():
                     if item["name"] == filename.split('.')[0]:
                         flag = False
             if flag:
+
+                name = "./temp/" + file.filename
+                file.save(name)
+                with ZipFile(name, 'a') as zipf:
+                    source_path = "./api.py"
+                    dest = "api.py"
+
+                    zipf.write(source_path, dest)
+                
                 zipfile = ZipFile(file._file)
-                if validate_Zip(zipfile):
+                if validate_Zip_app_service(zipfile):
                     create_directory(connection_string, share_name, 'application_repo/' + filename.split('.')[0])
                     print(zipfile.namelist())
                     fileslist = zipfile.namelist()[1:]
@@ -104,4 +129,10 @@ def upload_application():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8082)
+
+
+    service_ports = services_config_coll.find()
+
+    app_service_port = service_ports[0]['app_service']
+
+    app.run(debug=True, host='0.0.0.0', port=app_service_port)

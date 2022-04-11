@@ -1,3 +1,5 @@
-flask_sqlalchemy==2.5.1
-flask_restful==0.3.9
-flask_login==0.6.0
+azure_storage==0.37.0
+Flask==2.0.2
+numpy==1.22.2
+pymongo==4.1.0
+Werkzeug==2.0.3

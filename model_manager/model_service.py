@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, request, render_template, session
-from flask_pymongo import PyMongo
 from flask import Flask, request, redirect, url_for, flash, render_template
 import os
 from werkzeug.utils import secure_filename
@@ -7,7 +6,8 @@ from zipfile import ZipFile
 import json
 import pickle
 import numpy as np
-
+import download_from_azure
+import shutil
 from azurerepo2 import create_directory, upload_local_file
 
 from azure.core.exceptions import (
@@ -22,6 +22,16 @@ from azure.storage.fileshare import (
     ShareFileClient
 )
 
+import pymongo
+from flask_pymongo import PyMongo
+
+client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
+db_name = "ias_database"
+client = pymongo.MongoClient(client)
+mydb = client[db_name]
+services_config_coll = mydb["services_config"]
+
+
 share_name = "ias-storage"
 connection_string = "DefaultEndpointsProtocol=https;AccountName=iasproject;AccountKey=QmnE09E9Cl6ywPk8J31StPn5rKPy+GnRNtx3M5VC5YZCxAcv8SeoUHD2o1w6nI1cDXgpPxwx1D9Q18bGcgiosQ==;EndpointSuffix=core.windows.net"
 
@@ -29,13 +39,14 @@ connection_string = "DefaultEndpointsProtocol=https;AccountName=iasproject;Accou
 service_client = ShareServiceClient.from_connection_string(connection_string)
 
 app = Flask(__name__)
-app.config['MONGO_URI'] = "mongodb+srv://ias_mongo_user:ias_password@cluster0.doy4v.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+app.config['MONGO_URI'] = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
 app.config['SECRET_KEY'] = "SuperSecretKey"
 
 mongo_db = PyMongo(app)
 db = mongo_db.db
 
 ALLOWED_EXTENSIONS = set(['zip'])
+
 
 def download_azure_file(connection_string, share_name, dir_name, file_name):
     try:
@@ -44,12 +55,13 @@ def download_azure_file(connection_string, share_name, dir_name, file_name):
 
         file_client = ShareFileClient.from_connection_string(
             connection_string, share_name, source_file_path)
-
+        print(source_file_path)
         stream = file_client.download_file()
         return stream.readall()
 
     except ResourceNotFoundError as ex:
         print("ResourceNotFoundError:", ex.message)
+
 
 @app.route('/')
 def home_page():
@@ -107,6 +119,7 @@ def uploadConfig(file_path):
     return
 
 
+"""
 @app.route('/upload_model', methods=['POST', 'GET'])
 def uploadModel():
     if request.method == 'POST':
@@ -117,10 +130,12 @@ def uploadModel():
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
+
         # Provided file path
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            share_client = ShareClient.from_connection_string(connection_string, share_name)
+            share_client = ShareClient.from_connection_string(
+                connection_string, share_name)
             flag = True
             for item in list(share_client.list_directories_and_files('model_repo')):
                 print(item['name'])
@@ -131,15 +146,17 @@ def uploadModel():
             if flag:
                 zipfile = ZipFile(file._file)
                 if validate_Zip(zipfile):
-                    create_directory(connection_string, share_name, 'model_repo/' + filename.split('.')[0])
+                    create_directory(connection_string, share_name,
+                                     'model_repo/' + filename.split('.')[0])
                     print(zipfile.namelist())
                     fileslist = zipfile.namelist()[1:]
                     for name in fileslist:
                         print(name)
                         newfile = zipfile.read(name)
                         print('application_repo/' + name)
-                        upload_local_file(connection_string, newfile, share_name, 'model_repo/' + name)
-                        if name.split('/')[1] == "model_config.json": 
+                        upload_local_file(
+                            connection_string, newfile, share_name, 'model_repo/' + name)
+                        if name.split('/')[1] == "model_config.json":
                             json_data = json.loads(newfile.decode('utf-8'))
                             print(json_data)
                             json_data['_id'] = json_data['model_name']
@@ -153,6 +170,39 @@ def uploadModel():
         return render_template('index.html')
 
     return render_template('index.html')
+"""
+
+def download_model_directory(model_name):
+    share_name = "ias-storage"
+    connection_string = "DefaultEndpointsProtocol=https;AccountName=iasproject;AccountKey=QmnE09E9Cl6ywPk8J31StPn5rKPy+GnRNtx3M5VC5YZCxAcv8SeoUHD2o1w6nI1cDXgpPxwx1D9Q18bGcgiosQ==;EndpointSuffix=core.windows.net"
+
+    # pre work
+    if os.path.exists("model_repo"):
+        # if os.path.exists(f"application_repo/"):
+        #     pass
+        # else:
+        #     os.mkdir(f"application_repo/")
+        pass
+    else:
+        os.mkdir("model_repo")
+        # os.mkdir(f"application_repo/")
+
+    source_name = model_name
+    source_dir = "model_repo"
+    desti_dir = "model_repo"
+
+    if os.path.exists(desti_dir + "/" + source_name):
+        print("No need to download.... Dir/File already exixsts")
+        return
+
+    download_from_azure.download_source(
+        source_name,
+        source_dir,
+        desti_dir,
+        connection_string,
+        share_name, space="   "
+    )
+
 
 
 @app.route('/predict', methods=['POST'])
@@ -162,8 +212,25 @@ def predictOutput():
     ip_data = json_data['data']
     ip_data = np.array(ip_data)
 
-    pickle_file = download_azure_file(connection_string, share_name,"iasdir", model_name)
-    AI_model = pickle.load(pickle_file)
+    # model_name = "ac_prediction_model"
+
+    print(f"MODEL NAME = {model_name}")
+    print(f"MODEL NAME = {model_name}")
+    print(f"MODEL NAME = {model_name}")
+    print(f"MODEL NAME = {model_name}")
+    print(f"MODEL NAME = {model_name}")
+    print(f"MODEL NAME = {model_name}")
+    print(f"MODEL NAME = {model_name}")
+
+    shutil.rmtree("./model_repo")
+
+    download_model_directory(model_name)
+
+    pickle_file = f"model_repo/{model_name}/{model_name}.pkl"
+    model_config_file = f"model_repo/{model_name}/model_config.json"
+    print(pickle_file)
+    pf=open(pickle_file,"rb")
+    AI_model = pickle.load(pf)
 
     # Prediction
     print("ip_data:", ip_data)
@@ -174,8 +241,18 @@ def predictOutput():
     jsonObj = {
         "predicted_value": prediction_data
     }
+    print(type(prediction_data))
+    print(prediction_data)
+
     return json.dumps(jsonObj)
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5003)
+
+    # predictOutput()
+
+    service_ports = services_config_coll.find()
+
+    model_service_port = service_ports[0]['model_service']
+
+    app.run(debug=True, host='0.0.0.0', port=model_service_port)

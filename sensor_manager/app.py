@@ -4,6 +4,14 @@ import sensor_manager
 import sensor_db
 import kafka_manager
 import json
+import pymongo
+
+client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
+db_name = "ias_database"
+client = pymongo.MongoClient(client)
+mydb = client[db_name]
+services_config_coll = mydb["services_config"]
+
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -88,5 +96,14 @@ if __name__ == "__main__":
     else:
         print("DATABASE ALREADY EXISTS...")
         kafka_manager.produce_sensors_data()
+    
 
-    app.run(host="0.0.0.0",port=5000, debug=True)
+
+    service_ports = services_config_coll.find()
+
+    sensor_service_port = service_ports[0]['sensor_service']
+
+
+
+    app.run(debug=True, host='0.0.0.0', port=sensor_service_port)
+
