@@ -1,3 +1,4 @@
+import logging
 from flask_pymongo import PyMongo
 from flask import Flask, request, jsonify
 import threading
