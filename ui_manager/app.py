@@ -16,7 +16,7 @@ import flask
 from flask import Flask, render_template, request, flash, redirect, url_for
 from importlib_metadata import method_cache
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, login_manager, login_user, logout_user, login_required, UserMixin
+from flask_login import LoginManager, login_manager, login_user, logout_user, login_required, UserMixin, current_user
 
 import pymongo
 import shutil
@@ -122,6 +122,12 @@ def register():
             real = UserLogin(username=username, email=email, password=password)
             db.session.add(real)
             db.session.commit()
+            data = {
+                "_id" : username,
+                "username" : username,
+                "email" : email
+            }
+            db1.user.insert_one(data)
         return redirect(url_for('login'))
 
     return render_template('register.html')
@@ -501,6 +507,8 @@ def app_upload():
                             json_data = json.loads(newfile.decode('utf-8'))
                             logging.warning(json_data)
                             json_data['_id'] = json_data['app_name']
+                            x = current_user.username
+                            json_data['user'] = x
 
                             try:
 
