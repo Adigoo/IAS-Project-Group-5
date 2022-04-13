@@ -39,9 +39,9 @@ def readFromFile(path, key):
 
 def get_public_ip():
     resp = requests.get("http://api.ipify.org/").content.decode()
-    return "172.17.0.1"
+    # return "172.17.0.1"
     # return "localhost"
-    # return resp
+    return resp
 
 def getSensorInstances(path="ac_app.json"):
     sensor_type, sensor_location, no_of_instances = readFromFile(

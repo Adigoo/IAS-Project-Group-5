@@ -27,10 +27,10 @@ mongo_db = PyMongo(app)
 db = mongo_db.db
 
 
-localhost_ip_address = "172.17.0.1"
+# localhost_ip_address = "172.17.0.1"
 
-# pub_ip = requests.get("http://api.ipify.org").content.decode()
-# localhost_ip_address = pub_ip
+pub_ip = requests.get("http://api.ipify.org").content.decode()
+localhost_ip_address = pub_ip
 
 @app.route('/run', methods=["POST", "GET"])
 def runImg():

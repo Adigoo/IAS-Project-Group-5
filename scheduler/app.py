@@ -117,12 +117,12 @@ def check_in_time():
             if(current_time == each_app_time[1]):
                 service_ports = services_config_coll.find()
                 deployer_service_port = service_ports[0]['deployer_service']
-                localhost_ip_address = "172.17.0.1"
-                logging.warning(f"sending request to deployer on {deployer_service_port} port for {each_app_time} \n\n\n")
-                logging.warning(f"http://{localhost_ip_address}: + str(deployer_service_port) + '/run'\n\n\n")
+                # localhost_ip_address = "172.17.0.1"
                 pub_ip = requests.get("http://api.ipify.org").content.decode()
                 localhost_ip_address = pub_ip
                 
+                logging.warning(f"sending request to deployer on {deployer_service_port} port for {each_app_time} \n\n\n")
+                logging.warning(f"http://{localhost_ip_address}: + str(deployer_service_port) + '/run'\n\n\n")
                 requests.post(
                     f"http://{localhost_ip_address}:" + str(deployer_service_port) + '/run', 
                     json={
@@ -159,9 +159,9 @@ def check_out_time():
                 logging.warning("sending KILL request to deployer\n\n")
                 logging.warning(f"json_to_send = {json_to_send}\n\n")
 
-                localhost_ip_address = "172.17.0.1"
-                # pub_ip = requests.get("http://api.ipify.org").content.decode()
-                # localhost_ip_address = pub_ip
+                # localhost_ip_address = "172.17.0.1"
+                pub_ip = requests.get("http://api.ipify.org").content.decode()
+                localhost_ip_address = pub_ip
                 requests.post("http://{localhost_ip_address}:" + str(deployer_service_port) + '/kill',
                     json=json_to_send
                 )

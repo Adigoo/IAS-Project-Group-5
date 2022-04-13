@@ -18,9 +18,9 @@ sensor_service_port = service_ports[0]['sensor_service']
 controller_service_port = service_ports[0]['controller_service']
 model_service_port = service_ports[0]['model_service']
 
-localhost_ip_address = "172.17.0.1"
-# pub_ip = requests.get("http://api.ipify.org").content.decode()
-# localhost_ip_address = pub_ip
+# localhost_ip_address = "172.17.0.1"
+pub_ip = requests.get("http://api.ipify.org").content.decode()
+localhost_ip_address = pub_ip
 
 
 sensor_url = f'http://{localhost_ip_address}:{sensor_service_port}/'

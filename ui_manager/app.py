@@ -524,9 +524,9 @@ def configuration_upload():
 
     scheduler_service_port = service_ports[0]['scheduler_service']
     # service_ports[0]['scheduler_service']
-    localhost_ip_address = "172.17.0.1"
-    # pub_ip = requests.get("http://api.ipify.org").content.decode()
-    # localhost_ip_address = pub_ip
+    # localhost_ip_address = "172.17.0.1"
+    pub_ip = requests.get("http://api.ipify.org").content.decode()
+    localhost_ip_address = pub_ip
     return redirect(f"http://{localhost_ip_address}:{scheduler_service_port}/")
 
 

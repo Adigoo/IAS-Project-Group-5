@@ -2,9 +2,9 @@ import control_db
 import json
 import requests
 
-localhost_ip_address = "172.17.0.1"
-# pub_ip = requests.get("http://api.ipify.org").content.decode()
-# localhost_ip_address = pub_ip
+# localhost_ip_address = "172.17.0.1"
+pub_ip = requests.get("http://api.ipify.org").content.decode()
+localhost_ip_address = pub_ip
 
 def perform_action(sensor_type, sensor_location):
     ip, port = control_db.get_ip_and_port(sensor_type, sensor_location)

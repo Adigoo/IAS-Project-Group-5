@@ -22,9 +22,9 @@ def readFromFile(path, key):
 
 def get_public_ip():
     resp = requests.get("http://api.ipify.org/").content.decode()
-    return "172.17.0.1"
+    # return "172.17.0.1"
     # return "OPEN API"
-    # return resp
+    return resp
 
 
 def getSensorInstances(path="ac_app.json"):
