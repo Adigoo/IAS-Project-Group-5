@@ -22,6 +22,8 @@ def registerSensorInstance(sensor_instance):
 def register_sensors_from_json(path):
     f = open(path)
     sensors = json.load(f)
+    for sensor_type in sensors['sensor_types']:
+        registerSensorType(sensor_type)
     for instance in sensors['sensor_instances']:
         registerSensorInstance(instance)
 

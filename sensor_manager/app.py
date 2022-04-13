@@ -1,3 +1,4 @@
+from urllib import response
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import sensor_manager
@@ -20,18 +21,35 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 ################################## SENSOR REGISTRATION ########################################
 
-# @app.route("/registerSensorType", methods=["POST"])
-# def registerSensorType():
-#     sensor_type = request.json
-#     sensor_manager.registerSensorType(sensor_type)
-#     return json.dumps({"data": "Registered Sensor Type successfully"})
+@app.route("/registerSensorType", methods=["POST"])
+def registerSensorType():
+    data = request.json
+    new_type = data['sensor_type']
+    # Check if the sensor type already exists
+    sensor_types = sensor_manager.getAllSensorTypes()
+    res = ""
+    if new_type in sensor_types:
+        res = "Sensor type already exists !!"
+    else:
+        sensor_manager.registerSensorType(data)
+        res = "Sensor type registered successfully !!"
+
+    return json.dumps({"data": res})
 
 
 @app.route("/registerSensorInstance", methods=["POST"])
 def registerSensorInstance():
     sensor_instance = request.json
-    sensor_manager.registerSensorInstance(sensor_instance)
-    return json.dumps({"data": "Registered Sensor Instance successfully"})
+    # Checking if the sensor type exists or not
+    new_type = sensor_instance['sensor_type']
+    sensor_types = sensor_manager.getAllSensorTypes()
+    if new_type not in sensor_types:
+        res = "Sensor type doesnot exists !!"
+    else:
+        sensor_manager.registerSensorInstance(sensor_instance)
+        res = "Sensor instance registered successfully !!"
+
+    return json.dumps({"data": res})
 
 ################################# GET A SENSOR DATA ###########################################
 
@@ -97,13 +115,9 @@ if __name__ == "__main__":
         print("DATABASE ALREADY EXISTS...")
         kafka_manager.produce_sensors_data()
     
-
-
     service_ports = services_config_coll.find()
 
     sensor_service_port = service_ports[0]['sensor_service']
-
-
 
     app.run(debug=True, host='0.0.0.0', port=sensor_service_port)
 

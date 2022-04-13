@@ -12,7 +12,7 @@ db_name = "ias_database"
 client = pymongo.MongoClient(client)
 mydb = client[db_name]
 instancesdb = mydb["SensorInstances"]
-
+typedb = mydb["SensorTypes"]
 
 
 
@@ -23,9 +23,9 @@ instancesdb = mydb["SensorInstances"]
 
 
 # Deprecated
-# def register_sensor_type(sensor_type):
-#     types = mydb["SensorTypes"]
-#     types.insert_one(sensor_type)
+def register_sensor_type(sensor_type):
+    types = mydb["SensorTypes"]
+    types.insert_one(sensor_type)
 
 ################################ DATABASE CREATION and DROPPING ################################
 
@@ -66,7 +66,7 @@ def register_sensor_instance(sensor_instance):
 
 def get_all_sensor_types():
     sensor_types = set()
-    for document in instancesdb.find():
+    for document in typedb.find():
         sensor_types.add(document['sensor_type'])
     sensor_types = list(sensor_types)
     return sensor_types
