@@ -16,7 +16,7 @@ import flask
 from flask import Flask, render_template, request, flash, redirect, url_for
 from importlib_metadata import method_cache
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, login_manager, login_user, logout_user, login_required, UserMixin
+from flask_login import LoginManager, login_manager, login_user, logout_user, login_required, UserMixin, current_user
 
 import pymongo
 import shutil
@@ -185,7 +185,7 @@ def logout():
 @app.route("/home", methods=["GET", "POST"])
 @login_required
 def home():
-    return render_template('home.html')
+    return render_template('home.html',data = current_user.username)
 
 
 # sensor_type_upload
