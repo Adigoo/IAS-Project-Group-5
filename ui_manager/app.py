@@ -14,7 +14,7 @@ import sensor_instance_validator
 
 import flask
 from flask import Flask, render_template, request, flash, redirect, url_for
-from importlib_metadata import method_cache
+#from importlib_metadata import method_cache
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_manager, login_user, logout_user, login_required, UserMixin, current_user
 
@@ -50,6 +50,7 @@ connection_string = "DefaultEndpointsProtocol=https;AccountName=iasproject;Accou
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Users.db'
 app.config['SECRET_KEY'] = 'secretKey'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config['MONGO_URI'] = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
 
