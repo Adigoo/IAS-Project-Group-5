@@ -192,7 +192,7 @@ def logout():
 @app.route("/home", methods=["GET", "POST"])
 @login_required
 def home():
-    return render_template('home.html')
+    return render_template('home.html',data = current_user.username)
 
 
 # sensor_type_upload

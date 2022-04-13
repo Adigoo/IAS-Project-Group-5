@@ -32,7 +32,12 @@ db = mongo_db.db
 pub_ip = requests.get("http://api.ipify.org").content.decode()
 localhost_ip_address = pub_ip
 
-@app.route('/run', methods=["POST", "GET"])
+
+
+
+###################################################################
+
+@app.route('/run', methods=["POST"])
 def runImg():
     logging.warning("got request from scheduler")
     recieved_json = request.get_json()
@@ -80,7 +85,7 @@ def runImg():
     return 'Requests to the node for deploying'
 
 
-@app.route('/kill', methods=["POST", "GET"])
+@app.route('/kill', methods=["POST"])
 def killImg():
     logging.warning("In KILL request")
     if request.method == 'POST':
