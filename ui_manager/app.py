@@ -527,6 +527,7 @@ def configuration_upload():
     # localhost_ip_address = "172.17.0.1"
     pub_ip = requests.get("http://api.ipify.org").content.decode()
     localhost_ip_address = pub_ip
+    logging.warning(f"Redirecting to {localhost_ip_address}")
     return redirect(f"http://{localhost_ip_address}:{scheduler_service_port}/")
 
 
