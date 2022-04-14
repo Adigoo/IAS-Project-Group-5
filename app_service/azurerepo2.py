@@ -21,7 +21,7 @@ def create_file_share(connection_string, share_name):
         share_client.create_share()
 
     except ResourceExistsError as ex:
-        logging.warning("ResourceExistsError:", ex.message)
+        logging.warning(f"ResourceExistsError: {ex.message}")
 
     
 def create_directory(connection_string, share_name, dir_name):
@@ -30,11 +30,11 @@ def create_directory(connection_string, share_name, dir_name):
         dir_client = ShareDirectoryClient.from_connection_string(
             connection_string, share_name, dir_name)
 
-        logging.warning("Creating directory:", share_name + "/" + dir_name)
+        logging.warning(f"Creating directory: {share_name}/{dir_name}")
         dir_client.create_directory()
 
     except ResourceExistsError as ex:
-        logging.warning("ResourceExistsError:", ex.message)
+        logging.warning(f"ResourceExistsError: {ex.message}")
 
 def upload_local_file(connection_string, data, share_name, dest_file_path):
     try:
@@ -51,10 +51,10 @@ def upload_local_file(connection_string, data, share_name, dest_file_path):
         file_client.upload_file(data)
 
     except ResourceExistsError as ex:
-        logging.warning("ResourceExistsError:", ex.message)
+        logging.warning(f"ResourceExistsError: {ex.message}")
 
     except ResourceNotFoundError as ex:
-        logging.warning("ResourceNotFoundError:", ex.message)
+        logging.warning(f"ResourceExistsError: {ex.message}")
 
 if __name__ == "__main__":
     share_name = "ias-storage"

@@ -91,7 +91,7 @@ def upload_application():
             for item in list(share_client.list_directories_and_files('application_repo')):
                 logging.warning(item['name'])
                 if item["is_directory"]:
-                    logging.warning("Directory:", item["name"])
+                    logging.warning(f"Directory: {item['name']}")
                     if item["name"] == filename.split('.')[0]:
                         flag = False
             if flag:

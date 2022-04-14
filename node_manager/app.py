@@ -26,6 +26,12 @@ mongo_db = PyMongo(app)
 db = mongo_db.db
 
 
+#####################################################################
+#####################################################################
+#####################################################################
+#####################################################################
+#####################################################################
+
 def json_deserializer(data):
     return json.dumps(data).decode('utf-8')
 
@@ -77,7 +83,7 @@ def getNode():
     rdf = srt[0]
     ke = list(loads.keys())
     logging.warning(ke[0])
-    logging.warning("Deploy on "+ke[0], file=sys.stderr)
+    logging.warning("Deploy on {ke[0]} file=sys.stderr")
     logging.warning(cl+"\t"+cm)
     return ke[0]
 

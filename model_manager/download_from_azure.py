@@ -2,13 +2,13 @@ import os
 import json
 from azure.storage.fileshare import ShareDirectoryClient
 from azure.storage.fileshare import ShareFileClient
-
+import logging
 
 
 
 
 def helper_download_dir(source_dir, desti_dir, c_str, s_name, space = ""):
-    logging.warning("in HELPER", source_dir, desti_dir)
+    logging.warning(f"in HELPER, {source_dir}, {desti_dir}")
     dir_client = ShareDirectoryClient.from_connection_string(conn_str=c_str, share_name=s_name, directory_path=source_dir)
 
     my_list = []
@@ -16,7 +16,7 @@ def helper_download_dir(source_dir, desti_dir, c_str, s_name, space = ""):
         my_list.append(item)
 
     for ele in my_list:
-        logging.warning(space, ele)
+        logging.warning(f"{space}, {ele}")
 
         if ele['is_directory']:
             os.mkdir(desti_dir + "/" + ele['name'])

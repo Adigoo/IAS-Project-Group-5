@@ -1,7 +1,7 @@
 {
     "application-name": "ac_app",
-    "start-time": "2022-04-13 16:00:00",
-    "end-time": "2022-04-13 16:02:30",
+    "start-time": "2022-04-14 11:00:50",
+    "end-time": "2022-04-14 11:23:50",
     "sensor_details": {
         "sensor_type": [
             "temp"

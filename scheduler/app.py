@@ -1,5 +1,5 @@
 # from app_service.app import application_DB
-
+import random
 from distutils.command.config import config
 import requests
 import subprocess
@@ -86,9 +86,10 @@ def add_schedule(json_data):
         end_time = json_data["end-time"]
         application_name = json_data["application-name"]
         config_id = json_data['config_id']
+        port_num = json_data['port_num']
 
-        start_tuple = (application_name, start_time, config_id)
-        end_tuple = (application_name, end_time, config_id)
+        start_tuple = (application_name, start_time, config_id, port_num)
+        end_tuple = (application_name, end_time, config_id, port_num)
 
         in_time.append(start_tuple)
         out_time.append(end_tuple)
@@ -120,14 +121,16 @@ def check_in_time():
                 # localhost_ip_address = "172.17.0.1"
                 pub_ip = requests.get("http://api.ipify.org").content.decode()
                 localhost_ip_address = pub_ip
+                # localhost_ip_address = "localhost"
                 
-                logging.warning(f"sending request to deployer on {deployer_service_port} port for {each_app_time} \n\n\n")
+                logging.warning(f"sending timed request to deployer on {deployer_service_port} port for {each_app_time} \n\n\n")
                 logging.warning(f"http://{localhost_ip_address}: + str(deployer_service_port) + '/run'\n\n\n")
                 requests.post(
                     f"http://{localhost_ip_address}:" + str(deployer_service_port) + '/run', 
                     json={
                         "app_name": each_app_time[0],
-                        "config_id": each_app_time[2]
+                        "config_id": each_app_time[2],
+                        "port_num": each_app_time[3]
                     }
                 )
                 sleep(1)
@@ -162,11 +165,42 @@ def check_out_time():
                 # localhost_ip_address = "172.17.0.1"
                 pub_ip = requests.get("http://api.ipify.org").content.decode()
                 localhost_ip_address = pub_ip
-                requests.post("http://{localhost_ip_address}:" + str(deployer_service_port) + '/kill',
+                # localhost_ip_address = "localhost"
+                requests.post(
+                    f"http://{localhost_ip_address}:" + str(deployer_service_port) + '/kill',
                     json=json_to_send
                 )
                 sleep(1)
 
+
+
+@app.route("/schedule_model_request", methods=["POST"])
+def schedule_model_request():
+    received_json = request.get_json()
+    # fpath = received_json['fpath']
+    # app_name = received_json['app_name']
+    # config = received_json['config']
+    logging.warning(received_json)
+
+    service_ports = services_config_coll.find()
+    deployer_service_port = service_ports[0]['deployer_service']
+
+    logging.warning(
+        f"sending immediate request to deployer on {deployer_service_port} port for {received_json['model_name']} \n\n\n"
+    )
+    
+    pub_ip = requests.get("http://api.ipify.org").content.decode()
+    localhost_ip_address = pub_ip
+    # localhost_ip_address = "localhost"
+
+    logging.warning(f"http://{localhost_ip_address}: + str(deployer_service_port) + '/run'\n\n\n")
+    requests.post(
+        f"http://{localhost_ip_address}:" + str(deployer_service_port) + '/run', 
+        json=received_json
+    )
+    # pass
+
+    return "Sent immdidate model Request to deployer"
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -210,6 +244,10 @@ def upload_file():
                         
                     upload_local_file(connection_string, request.files['file'].read(), share_name, 'application_repo/'+ filename.split('.')[0]+ '/'+ filename)
                     # add_schedule(filename.split('.')[0])
+
+                    app_instance_port = 50000
+                    json_data['port_num'] = app_instance_port
+                    logging.warning(json_data)
                     add_schedule(json_data)
 
     return render_template('index.html')

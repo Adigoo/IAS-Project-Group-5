@@ -1,3 +1,4 @@
+from asyncio.log import logger
 import logging
 from platform import node
 import requests
@@ -31,6 +32,7 @@ db = mongo_db.db
 
 pub_ip = requests.get("http://api.ipify.org").content.decode()
 localhost_ip_address = pub_ip
+# localhost_ip_address = "localhost"
 
 
 
@@ -39,15 +41,22 @@ localhost_ip_address = pub_ip
 
 @app.route('/run', methods=["POST"])
 def runImg():
+
+    # this request will always be POST request
+    
+
     logging.warning("got request from scheduler")
     recieved_json = request.get_json()
     logging.warning(recieved_json)
+
+
     service_ports = services_config_coll.find()
     node_service_port = service_ports[0]['node_service']
 
     logging.warning("sending request to node manager")
-    resp = requests.get("http://{localhost_ip_address}:" +
-                        str(node_service_port) + "/getNode").content.decode()
+    resp = requests.get(
+        f"http://{localhost_ip_address}:" +str(node_service_port) + "/getNode"
+    ).content.decode()
 
     node_endpoint = resp
 
@@ -55,33 +64,71 @@ def runImg():
     logging.warning(f"got back from node manager, response =  {node_endpoint}")
     recieved_json['url'] = node_endpoint
     logging.warning(recieved_json)
-    recieved_json['fpath'] = 'application_repo/' + recieved_json['app_name']
-    logging.warning("hello", recieved_json)
+    
 
-    actual_config = db.configuration.find_one(
-        {"_id": ObjectId(recieved_json["config_id"])})
-    logging.warning(f"actual_config = {actual_config}")
+    #######################
+    #######################
+    #######################
 
-    recieved_json["config"] = actual_config
+    if "schedule_type" in recieved_json.keys() and recieved_json['schedule_type'] == 1:
+        # MODEL DEPLOY REQUEST
+        logger.warning(f"GOT MODEL shceduling reeust {recieved_json['schedule_type'] == 1}")
+        recieved_json['fpath'] = 'model_repo/' + recieved_json['model_name']
+        logging.warning("hello, {recieved_json}")
 
-    if '_id' in recieved_json["config"]:
-        del recieved_json["config"]['_id']
+        logging.warning(f"node_endpoint = {node_endpoint}")
 
-    # SENDING REQUEST TO NODE
-    logging.warning(f"node_endpoint = {node_endpoint}")
+        ##
+        url_to_request = f"{node_endpoint}/runapp"
+        logging.warning(f"url_to_request = {url_to_request}")
+        res = requests.post(url=url_to_request,
+                            json=recieved_json).json()
+        
+        recieved_json['container_id'] = res['container_id']
 
-    url_to_request = f"{node_endpoint}/runapp"
-    logging.warning(f"url_to_request = {url_to_request}")
-    res = requests.post(url=url_to_request,
-                        json=recieved_json).json()
-    recieved_json['pID'] = res['pID']
+        logging.warning(f"recieved_json['container_id'] = {recieved_json['container_id']}")
+        # recieved_json["config_id"] = recieved_json["config_id"])
+        try:
+            db.deployer_log.insert_one(recieved_json)
+        except:
+            pass
+    
 
-    logging.warning(f"recieved_json['pID'] = {recieved_json['pID']}")
-    # recieved_json["config_id"] = recieved_json["config_id"])
-    try:
-        db.deployer_log.insert_one(recieved_json)
-    except:
-        pass
+    else:
+        # APP DEPLOY REQUEST
+        recieved_json['fpath'] = 'application_repo/' + recieved_json['app_name']
+        logging.warning("hello, {recieved_json}")
+
+        actual_config = db.configuration.find_one(
+            {"_id": ObjectId(recieved_json["config_id"])}
+        )
+
+        logging.warning(f"actual_config = {actual_config}")
+
+        recieved_json["config"] = actual_config
+
+        if '_id' in recieved_json["config"]:
+            del recieved_json["config"]['_id']
+
+        # SENDING REQUEST TO NODE
+        logging.warning(f"node_endpoint = {node_endpoint}")
+
+        recieved_json['schedule_type'] = 2
+
+        url_to_request = f"{node_endpoint}/runapp"
+        logging.warning(f"url_to_request = {url_to_request}")
+        res = requests.post(url=url_to_request,
+                            json=recieved_json).json()
+        
+        recieved_json['container_id'] = res['container_id']
+
+        logging.warning(f"recieved_json['container_id'] = {recieved_json['container_id']}")
+        # recieved_json["config_id"] = recieved_json["config_id"])
+        try:
+            db.deployer_log.insert_one(recieved_json)
+        except:
+            pass
+    
     return 'Requests to the node for deploying'
 
 
@@ -95,10 +142,6 @@ def killImg():
             logging.warning("Go GOa GOne\n\n")
             logging.warning("Go GOa GOne\n\n")
             logging.warning("Go GOa GOne\n\n")
-            logging.warning("Go GOa GOne\n\n")
-            logging.warning("Go GOa GOne\n\n")
-            logging.warning("Go GOa GOne\n\n")
-            logging.warning("Go GOa GOne\n\n")
 
         logging.debug(f"received_json = {received_json}")
         # data = db.deployer_log.find_one(
@@ -106,7 +149,7 @@ def killImg():
 
         configuration_document = db.deployer_log.find_one(
             {"config_id": received_json["config_id"]})
-        pid_to_kill = configuration_document["pID"]
+        container_id_to_kill = configuration_document["container_id"]
         url_of_node = configuration_document["url"]
 
         # url = received_json['url']
@@ -118,7 +161,7 @@ def killImg():
         # logging.warning(f"data = {received_json}")
         db.deployer_log.delete_one({'app_name': received_json['app_name']})
         res = requests.post(url=url_of_node + "/killapp",
-                            json={'proID': pid_to_kill})
+                            json={'container_id': container_id_to_kill})
         logging.warning(res.content)
 
     return "Killed"

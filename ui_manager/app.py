@@ -2,7 +2,7 @@ import logging
 import azurerepo2
 from zipfile import ZipFile
 import os
-from flask import Flask, render_template, request, flash, redirect, url_for, session
+from flask import Flask, jsonify, render_template, request, flash, redirect, url_for, session
 from werkzeug.utils import secure_filename
 
 import requests
@@ -20,6 +20,7 @@ from flask_login import LoginManager, login_manager, login_user, logout_user, lo
 
 import pymongo
 import shutil
+import model_util
 
 # from azure.core.exceptions import (
 #     ResourceExistsError,
@@ -142,7 +143,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        logging.warning(username, password)
+        logging.warning(f"{username} {password}")
 
         check_user = UserLogin.query.filter_by(username=username).first()
         logging.warning(f"check_user = {check_user}")
@@ -352,6 +353,19 @@ def uploadConfig(file_path):
 #     except ResourceNotFoundError as ex:
 #         logging.warning("ResourceNotFoundError:", ex.message)
 
+@login_required
+def get_user_details():
+    # username = current_user.username
+    # email = current_user.email
+    # id = current_user.id
+
+    res = {}
+
+    res['username'] = current_user.username
+    res['email'] = current_user.email
+    res['id'] = current_user.id
+
+    return res
 
 
 
@@ -386,7 +400,7 @@ def model_upload():
             for item in list(share_client.list_directories_and_files('model_repo')):
                 logging.warning(item['name'])
                 if item["is_directory"]:
-                    logging.warning("Directory:", item["name"])
+                    logging.warning(f"Directory: {item['name']}")
                     if item["name"] == filename.split('.')[0]:
                         azurerepo2.delete_dir_tree(connection_string,
                             share_name,
@@ -397,10 +411,51 @@ def model_upload():
             logging.warning("before validation")
 
             if flag:
-                zipfile = ZipFile(file._file)
+                if os.path.exists("./tmp"):
+                    shutil.rmtree("./tmp")
+                
+                os.mkdir("./tmp")
+
+                port_num = 40000
+                model_name = filename.split('.')[0]
+                model_util.generate_server_file(port_num, model_name)
+                model_util.generate_requirements()
+                model_util.generate_docker_file_for_model(model_name)
+
+
+                name = "./tmp/" + file.filename
+                logging.warning(f"type(file) = {type(file)}")
+                file.save(name)
+                with ZipFile(name, 'a') as zipf:
+                    source_path1 = "./tmp/Dockerfile"
+                    source_path2 = "./tmp/requirements.txt"
+                    source_path3 = "./tmp/server.py"
+                    logging.warning(os.getcwd())
+                    logging.warning("sending to ")
+                    logging.warning(f"{file.filename.split('.')[0]}/api.py")
+                    
+                    
+                    dest1 = f"{file.filename.split('.')[0]}/Dockerfile"
+                    dest2 = f"{file.filename.split('.')[0]}/requirements.txt"
+                    dest3 = f"{file.filename.split('.')[0]}/server.py"
+
+                    zipf.write(source_path1, dest1)
+                    zipf.write(source_path2, dest2)
+                    zipf.write(source_path3, dest3)
+                
+                file.save("./tmp/testing.zip")
+
+
+
+                
+                zipfile = ZipFile(name)
+                
+
+                # zipfile = ZipFile(file._file)
                 if validate_Zip_model_service(zipfile):
                     create_directory(connection_string, share_name,
                                      'model_repo/' + filename.split('.')[0])
+
                     logging.warning(zipfile.namelist())
                     fileslist = zipfile.namelist()[1:]
                     for name in fileslist:
@@ -411,14 +466,36 @@ def model_upload():
                             connection_string, newfile, share_name, 'model_repo/' + name)
                         if name.split('/')[1] == "model_config.json":
                             json_data = json.loads(newfile.decode('utf-8'))
+                            json_data['user_details'] = get_user_details()
                             logging.warning(json_data)
                             json_data['_id'] = json_data['model'][0]['model_name']
 
                             try:
-
                                 db1.model.insert_one(json_data)
                             except:
                                 pass
+                    
+
+                    # call to scheduler with "model_schedule" request and model_name
+                    json_to_send = {}
+                    json_to_send['model_name'] = filename.split('.')[0]
+                    json_to_send['schedule_type'] = 1
+                    json_to_send['user_details'] = get_user_details()
+                    json_to_send['port_num'] = port_num
+
+                    # pub_ip = requests.get("http://api.ipify.org/").content.decode()
+                    pub_ip = "localhost"
+                    
+                    service_ports = services_config_coll.find()
+                    scheduler_service_port = service_ports[0]['scheduler_service']
+
+                    requests.post(
+                        f"http://{pub_ip}:{scheduler_service_port}/schedule_model_request",
+                        json=json_to_send
+                    )
+
+
+
                             
                 else:
                     return "Improper Zip format"
@@ -457,7 +534,7 @@ def app_upload():
             for item in list(share_client.list_directories_and_files('application_repo')):
                 logging.warning(item['name'])
                 if item["is_directory"]:
-                    logging.warning("Directory:", item["name"])
+                    logging.warning(f"Directory: {item['name']}")
                     if item["name"] == filename.split('.')[0]:
                         azurerepo2.delete_dir_tree(connection_string,
                             share_name,
@@ -527,6 +604,7 @@ def configuration_upload():
     # localhost_ip_address = "172.17.0.1"
     pub_ip = requests.get("http://api.ipify.org").content.decode()
     localhost_ip_address = pub_ip
+    # localhost_ip_address = "localhost"
     logging.warning(f"Redirecting to {localhost_ip_address}")
     return redirect(f"http://{localhost_ip_address}:{scheduler_service_port}/")
 
@@ -544,4 +622,4 @@ if __name__ == '__main__':
 
 
 
-    app.run(debug=True, host='0.0.0.0', port=ui_service_port)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=ui_service_port)

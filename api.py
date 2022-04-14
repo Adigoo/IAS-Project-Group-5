@@ -3,9 +3,7 @@ import json
 import random
 import logging
 
-# sensor_url = 'http://localhost:5000/'
-# control_url = 'http://localhost:6000/'
-# model_url = 'http://localhost:5003/'
+
 model_name = "ac_prediction_model"
 
 

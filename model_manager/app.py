@@ -1,3 +1,4 @@
+import logging
 from flask import Flask, jsonify, request, render_template, session
 from flask import Flask, request, redirect, url_for, flash, render_template
 import os
@@ -47,6 +48,12 @@ db = mongo_db.db
 
 ALLOWED_EXTENSIONS = set(['zip'])
 
+
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
 
 def download_azure_file(connection_string, share_name, dir_name, file_name):
     try:
@@ -140,7 +147,7 @@ def uploadModel():
             for item in list(share_client.list_directories_and_files('model_repo')):
                 logging.warning(item['name'])
                 if item["is_directory"]:
-                    logging.warning("Directory:", item["name"])
+                    logging.warning(f"Directory: {item['name']}")
                     if item["name"] == filename.split('.')[0]:
                         flag = False
             if flag:
