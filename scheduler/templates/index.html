@@ -5,10 +5,26 @@
     <meta charset="utf-8">
 
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link rel ="stylesheet" href ="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
+    <link rel ="stylesheet" href ="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">  
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-
+    <script src ="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>  
+    <script src ="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>  
+    <script src ="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>  
+    <script src ="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>  
+    <script>  
+      $(function() {  
+        $('#datetimepicker1').datetimepicker();  
+      });  
+      // $(function () {  
+      //   $('#datetimepicker1').datetimepicker({
+      //     defaultDate: new Date(),
+      //     format: 'DD/MM/YYYY hh:mm:ss A',
+      //     sideBySide: true
+      // });
+    </script>
     <style>hr, h3 {padding-bottom: 20px;}canvas {background-color: #fff}</style>
     <style>
     </style>
@@ -18,16 +34,100 @@
     <div class="container">
 
       <div class="header">
-        <h3 class="text-muted">Flask upload zip file and unzip</h3>
+        <h1 class="text-muted">User Requirements Details</h1>
       </div>
 
-      <form method=post enctype=multipart/form-data>
-        <input type=file name=file>
-        <input type=submit value='Upload & Run'>
+      <form action="/formSubmit" method="post">
+        <div class="form-group row">
+          <label for="App_Name" class="col-sm-2 col-form-label">Application Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="appname" placeholder="App Name">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="start_time" class="col-sm-2 col-form-label">Start Time</label>
+          <div class="col-sm-10">
+            <div style="position: relative">
+              <input class="form-control" type="text" name="starttime" id="starttime" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="end_time" class="col-sm-2 col-form-label">End Time</label>
+          <div class="col-sm-10">
+            <div style="position: relative">
+              <input class="form-control" type="text" name="endtime" id="endtime"/>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="num_repeat" class="col-sm-2 col-form-label">Number Of Repetitions</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="noofrepeat" placeholder="Sensor Type">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="sensor_details" class="col-form-label"><h2 class="text-muted">Sensor Details</h2></label>
+        </div>
+        <div class="form-group row">
+          <label for="sensor_type" class="col-sm-2 col-form-label">Sensor Type</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="sensortype" placeholder="Sensor Type">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="sensor_location" class="col-sm-2 col-form-label">Sensor Location</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="sensorlocation" placeholder="Sensor Location">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="no_of_instance" class="col-sm-2 col-form-label">Number Of Instances</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="noofinstance" placeholder="Number of Instance">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="controller_info" class="col-form-label"><h2 class="text-muted">Controller Details</h2></label>
+        </div>
+        <div class="form-group row">
+          <label for="cont_sensor_type" class="col-sm-2 col-form-label">Sensor Type</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="contsensortype" placeholder="Sensor Type">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="cont_sensor_location" class="col-sm-2 col-form-label">Sensor Location</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="contsensorlocation" placeholder="Sensor Location">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="model_details" class="col-form-label"><h2 class="text-muted">Model Details</h2></label>
+        </div>
+        <div class="form-group row">
+          <label for="model_name" class="col-sm-2 col-form-label">Model Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="modelname" placeholder="Model Name">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
       </form>
-    </div>
 
-    <script>
+      <script>
+        $('#starttime').datetimepicker({
+            format: 'HH:mm:ss'
+        });
+        $('#endtime').datetimepicker({
+            format: 'HH:mm:ss'
+        });
     </script>
+
+    </div>
+ 
   </body>
 </html>
