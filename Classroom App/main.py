@@ -1,5 +1,7 @@
 from flask import Flask, render_template
 import threading
+import api
+from time import sleep
 
 app = Flask()
 
@@ -7,8 +9,24 @@ def fire_detection():
     pass
 
 def student_motion_detect():
-    
-    pass
+    while(1):
+        sensor_name = "Camera_sensor"
+        sensor_data = api.get_sensor_data(sensor_name)
+
+        model_name = "StudentMD_model"
+        StudentMD_pred_data = api.predict(sensor_data,model_name)
+
+        PC_action = StudentMD_pred_data['pc']
+        AC_action = StudentMD_pred_data['ac']
+        Fan_action = StudentMD_pred_data['fan']
+        Light_action = StudentMD_pred_data['light']
+
+        api.controllerAction(PC_action,"PC_controller")
+        api.controllerAction(AC_action,"AC_controller")
+        api.controllerAction(Fan_action,"Fan_controller")
+        api.controllerAction(Light_action,"Light_controller")
+
+        sleep(60)
 
 def attention_detection():
     pass
