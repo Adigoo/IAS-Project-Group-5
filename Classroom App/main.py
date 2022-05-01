@@ -7,7 +7,7 @@ def fire_detection():
     pass
 
 def student_motion_detect():
-    pass
+    
     pass
 
 def attention_detection():
