@@ -40,11 +40,11 @@ az vm open-port --port 5000 --resource-group $RESOURCE_GROUP_NAME --name $vm_nam
 az vm open-port --port 5001 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 701
 az vm open-port --port 5002 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 702
 az vm open-port --port 5003 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 703
-az vm open-port --port 5004 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 704
+az vm open-port --port 5004 --resource-group $RESOURCE_GROUP_NAME --name $vm_na0me --priority 704
 az vm open-port --port 5005 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 705
 az vm open-port --port 5006 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 706
 az vm open-port --port 5007 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 707
-az vm open-port --port 5008--resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 708
+az vm open-port --port 5008 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 708
 az vm open-port --port 5009 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 709
 az vm open-port --port 5010 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 710
 az vm open-port --port 2376 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 711
@@ -60,6 +60,8 @@ OUTPUT_FILENAME=vms_history.txt
 VM_ADMIN_USERNAME=$(az vm show --resource-group $RESOURCE_GROUP_NAME --name ${VM_NAMES[0]} --query 'osProfile.adminUsername' -o json)
 VM_ADMIN_USERNAME=$(echo "$VM_ADMIN_USERNAME" | tr '"' "'")
 
+
+counter = 0
 for ip in "${VM_PUBLIC_IPs[@]}"
 do
   IP_NEW="${ip%\"}"
@@ -71,7 +73,28 @@ do
   sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo apt-get install sshpass; sudo apt install -y python3-pip;sudo -H pip3 install --upgrade pip; pip3 install kafka-python mysql-connector-python;pip3 install azure-storage;pip install Flask;"
   # sshpass -f pass scp -o StrictHostKeyChecking=no -r node $UN_NEW@$IP_NEW:node
   # sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "cd node && python3 node2.py" &
+
+  if [[ $counter == 3 ]]; then
+
+    sshpass -f pass ssh -o StrictHostKeyChecking=no $USERNAME@$IP_ADDR "\
+        sudo apt install -y default-jre; \
+        wget https://dlcdn.apache.org/kafka/3.1.0/kafka_2.13-3.1.0.tgz \
+        tar -xzvf kafka_2.13-3.1.0.tgz; \
+        python3 update_advertized_listener_kafka.py $IP_ADDR; \
+        cd kafka_2.13-3.1.0.tgz; \
+        bin/zookeeper-server-start.sh -daemon config/zookeeper.properties; \
+        sleep 10s; \
+        JMX_PORT=8004 bin/kafka-server-start.sh -daemon config/server.properties; \
+        sleep 10s;
+    "
+
+  fi
+
+  counter=$(($counter + 1));
 done
+
+
+
 
 INDEX=0
 for ip in "${VM_PUBLIC_IPs[@]}"
