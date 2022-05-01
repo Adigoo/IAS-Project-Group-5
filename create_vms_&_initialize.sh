@@ -34,7 +34,7 @@ PUBLIC_IP_ADDRESS=$(az vm create --resource-group $RESOURCE_GROUP_NAME \
   --admin-username ias_user\
   --admin-password Abc@12345xyz\
   --query 'publicIpAddress' -o json)
-  
+
 VM_PUBLIC_IPs+=($PUBLIC_IP_ADDRESS)
 az vm open-port --port 22 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 400
 az vm open-port --port 80 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 600
@@ -64,6 +64,7 @@ VM_ADMIN_USERNAME=$(echo "$VM_ADMIN_USERNAME" | tr '"' "'")
 
 for ip in "${VM_PUBLIC_IPs[@]}"
 do
+  echo "Installing dependencies"
   IP_NEW="${ip%\"}"
   IP_NEW="${IP_NEW#\"}"
   UN_NEW="${VM_ADMIN_USERNAME%\'}"
@@ -71,6 +72,7 @@ do
   echo $IP_NEW
   echo $UN_NEW
   sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo apt-get install sshpass; sudo apt install -y python3-pip;sudo -H pip3 install --upgrade pip; pip3 install kafka-python;pip3 install azure-storage-file-share;pip3 install Flask;"
+  sudo chmod 777 /var/run/docker.sock
   # sshpass -f pass scp -o StrictHostKeyChecking=no -r node $UN_NEW@$IP_NEW:node
   # sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "cd node && python3 node2.py" &
 done
@@ -80,6 +82,6 @@ for ip in "${VM_PUBLIC_IPs[@]}"
 do
   echo "* $ip"
   ip=$(echo "$ip" | tr '"' "'")
-  echo "$ip '${VM_NAMES[$INDEX]}' $VM_ADMIN_USERNAME" > $OUTPUT_FILENAME
+  echo "$ip '${VM_NAMES[$INDEX]}' $VM_ADMIN_USERNAME" >> $OUTPUT_FILENAME
  INDEX=$((INDEX+1))
 done
