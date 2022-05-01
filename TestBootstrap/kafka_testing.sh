@@ -80,8 +80,10 @@ do
     sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "\
         sudo apt install -y default-jre; \
         wget https://dlcdn.apache.org/kafka/3.1.0/kafka_2.13-3.1.0.tgz; \
+        
         tar -xzvf kafka_2.13-3.1.0.tgz; \
-        rm -rf IAS-Project-Group-5;
+        rm -rf kafka_2.13-3.1.0.tgz*;\
+        rm -rf IAS-Project-Group-5;\
         git clone https://github.com/Adigoo/IAS-Project-Group-5.git;\
         cp IAS-Project-Group-5/TestBootstrap/update_advertized_listener_kafka.py .;\
         python3 ./update_advertized_listener_kafka.py $IP_ADDR; \
