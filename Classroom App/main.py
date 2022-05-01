@@ -1,10 +1,32 @@
 from flask import Flask, render_template
 import threading
+import api
+from time import sleep
 
 app = Flask()
 
 def fire_detection():
-    pass
+    while( True ):
+        model_name = "Smoke_Temp_detect_model"
+
+        sensor_name = "smoke_detect"
+        smoke_sensor_data = api.get_sensor_data( sensor_name )
+        
+        sensor_name = "temp_detect"
+        temp_sensor_data = api.get_sensor_data( sensor_name )
+        
+        data = {
+            "data" : {
+                "smoke" : smoke_sensor_data['data'],
+                "temp" : temp_sensor_data['data']
+            }
+        }
+        pred_data = api.predict( data, model_name )
+        
+        controller_name = "fire_alarm_controller"
+        api.controller_action( pred_data, controller_name )
+        sleep( 60 )
+
 
 def student_motion_detect():
     
