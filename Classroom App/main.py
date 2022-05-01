@@ -1,5 +1,7 @@
 from flask import Flask, render_template
 import threading
+import api
+from time import sleep
 
 app = Flask()
 
@@ -11,7 +13,15 @@ def student_motion_detect():
     pass
 
 def attention_detection():
-    pass
+    while(1):
+        sensor_name = "Camera"
+        model_name = "model1"
+        sensor_data = api.get_sensor_data(sensor_name)
+        image_name_list = api.predict(model_name,sensor_data)
+        model_name2 = "model2"
+        get_attentiveness = api.predict(model_name2,sensor_data)        
+        sleep(60)
+    
 
 app.route('/')
 def home():
