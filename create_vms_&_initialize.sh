@@ -31,8 +31,10 @@ PUBLIC_IP_ADDRESS=$(az vm create --resource-group $RESOURCE_GROUP_NAME \
   --verbose \
   --authentication-type all\
   --generate-ssh-keys\
+  --admin-username ias_user\
   --admin-password Abc@12345xyz\
   --query 'publicIpAddress' -o json)
+  
 VM_PUBLIC_IPs+=($PUBLIC_IP_ADDRESS)
 az vm open-port --port 22 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 400
 az vm open-port --port 80 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 600
