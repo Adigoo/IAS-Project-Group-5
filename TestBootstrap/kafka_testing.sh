@@ -15,7 +15,9 @@ az group create --name $RESOURCE_GROUP_NAME --location centralindia
 
 VM_NAMES=( "servicevm" "appvm" "modelvm" "kafkavm")
 # VM_NAMES=( "VM_kafka" )
-VM_PUBLIC_IPs=("20.219.141.117")
+VM_PUBLIC_IPs=()
+
+# "20.219.13.244" "20.207.197.64" "20.219.31.64" "20.207.198.176"
 
 printf "\n\n"
 echo "## Provisioning ${#VM_NAMES[@]} VMs ##"
@@ -45,7 +47,7 @@ az vm open-port --port 5004 --resource-group $RESOURCE_GROUP_NAME --name $vm_na0
 az vm open-port --port 5005 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 705
 az vm open-port --port 5006 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 706
 az vm open-port --port 5007 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 707
-az vm open-port --port 5008--resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 708
+az vm open-port --port 5008 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 708
 az vm open-port --port 5009 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 709
 az vm open-port --port 5010 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 710
 az vm open-port --port 2376 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 711
@@ -71,7 +73,7 @@ do
   UN_NEW="${UN_NEW#\'}"
   echo $IP_NEW
   echo $UN_NEW
-  sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo apt-get install sshpass; sudo apt install -y python3-pip;sudo -H pip3 install --upgrade pip; pip3 install kafka-python mysql-connector-python;pip3 install azure-storage;pip install Flask;"
+  sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo apt-get install sshpass; sudo apt install -y python3-pip;sudo -H pip3 install --upgrade pip; pip3 install kafka-python;pip3 install azure-storage-file-share;pip install Flask;"
   # sshpass -f pass scp -o StrictHostKeyChecking=no -r node $UN_NEW@$IP_NEW:node
   # sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "cd node && python3 node2.py" &
 
