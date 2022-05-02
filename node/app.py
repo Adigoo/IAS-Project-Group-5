@@ -205,24 +205,6 @@ def runApp():
         logging.warning(f"\n\nos.getcwd() = {os.getcwd()}\n\n")
         logging.warning(f"\n\nos.system('ls') = {os.system('ls')}\n\n")
 
-        ################
-
-        #command = f"docker build -t {app_name} ."
-        # os.system()
-        # out = subprocess.check_output(command, shell=True)
-        #os.system(command)
-        # out = out.decode('utf-8')
-        # out = out.strip()
-
-        # logging.warning(f"output of build ommand = {out}")
-
-        #command = f"docker run -d --rm -it -p {port_num}:5000 -v /etc/localtime:/etc/localtime:ro --net=host  --name {app_name} {app_name}"
-        # os.system(command)
-        #out = subprocess.check_output(command, shell=True)
-        #out = out.decode('utf-8')
-        #out = out.strip()
-        #logging.warning(f"output of run ommand = {out}")
-
 
         pub_ip = requests.get("http://api.ipify.org").content.decode()
         localhost_ip_address = pub_ip
