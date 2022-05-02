@@ -213,47 +213,6 @@ def download_model_directory(model_name):
 
 
 
-# @app.route('/predict', methods=['POST'])
-# def predictOutput():
-#     json_data = request.get_json()
-    # model_name = json_data['model_name']
-    # ip_data = json_data['data']
-    # ip_data = np.array(ip_data)
-
-#     # model_name = "ac_prediction_model"
-
-#     logging.warning(f"MODEL NAME = {model_name}")
-#     # logging.warning(f"MODEL NAME = {model_name}")
-#     # logging.warning(f"MODEL NAME = {model_name}")
-#     # logging.warning(f"MODEL NAME = {model_name}")
-#     # logging.warning(f"MODEL NAME = {model_name}")
-#     # logging.warning(f"MODEL NAME = {model_name}")
-#     # logging.warning(f"MODEL NAME = {model_name}")
-
-#     shutil.rmtree("./model_repo")
-
-#     download_model_directory(model_name)
-
-#     pickle_file = f"model_repo/{model_name}/{model_name}.pkl"
-#     model_config_file = f"model_repo/{model_name}/model_config.json"
-#     logging.warning(pickle_file)
-#     pf=open(pickle_file,"rb")
-#     AI_model = pickle.load(pf)
-
-#     # Prediction
-#     logging.warning("ip_data:", ip_data)
-#     prediction_data = AI_model.predict(ip_data)
-#     prediction_data = prediction_data.tolist()
-#     logging.warning("pred data:", prediction_data)
-#     # Response
-#     jsonObj = {
-#         "predicted_value": prediction_data
-#     }
-#     logging.warning(type(prediction_data))
-#     logging.warning(prediction_data)
-
-#     return json.dumps(jsonObj)
-
 
 @app.route('predict', methods=["POST, GET"])
 def predict():
@@ -279,4 +238,4 @@ if __name__ == '__main__':
 
     model_service_port = service_ports[0]['model_service']
 
-    app.run(debug=True, host='0.0.0.0', port=model_service_port)
+    app.run(debug=True, use_reloader=False,host='0.0.0.0', port=model_service_port)

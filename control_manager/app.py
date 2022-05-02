@@ -6,6 +6,7 @@ import control_db
 import control_manager
 import requests
 import pymongo
+import logging
 
 client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
 db_name = "ias_database"
@@ -59,4 +60,4 @@ if __name__ == "__main__":
 
 
 
-    app.run(debug=True, host='0.0.0.0', port=controller_service_port)
+    app.run(debug=True,use_reloader=False, host='0.0.0.0', port=controller_service_port)
