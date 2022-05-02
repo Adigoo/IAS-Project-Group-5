@@ -50,6 +50,8 @@ def getNode():
 
     node_service_port = service_ports[0]['node_service']
 
+    logging.warning("REACHED TILL DATA array")
+
     data = []
     try:
         
@@ -82,13 +84,13 @@ def getNode():
     for node_ip in data:
         # logging.warning(node['ip'])
         # logging.warning(node['port'])
-        logging.warning(node_ip)
+        logging.warning(f"node_ip = {node_ip}")
 
         # node_ip = node['ip']
         node_port = "5000"
         node_list.append(f"http://{node_ip}:{node_port}")
     # 3
-    logging.warning(node_list)
+    logging.warning(f"node_list = {node_list}")
 
     loads = {}
     # data=json.load(f)
@@ -101,6 +103,7 @@ def getNode():
         cm = str(req['mem_load'])
         tup = (cm, cl)
         loads[item] = tup
+    
     srt = sorted([(value, key) for (key, value) in loads.items()])
     # logging.warning()
 
