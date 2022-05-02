@@ -1,0 +1,8 @@
+{
+    "model": [
+        {
+            "model_name": "attention_detection_model",
+            "model_type": "decision_tree"
+        }
+    ]
+}
