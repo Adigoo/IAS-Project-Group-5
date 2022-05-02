@@ -173,6 +173,92 @@ def check_out_time():
                 sleep(1)
 
 
+def generate_api(data):
+    # INPUT_FILE_NAME = "app.json"
+    OUTPUT_FILE_NAME = "api.py"
+
+    # input_file = open(INPUT_FILE_NAME)
+    output_file = open(OUTPUT_FILE_NAME, "w")
+
+    # data = json.load(input_file)
+
+    # Import statements
+    imports = """import requests\nimport json\nimport random\n\n"""
+    output_file.write(imports)
+
+    # For getting public ip
+    get_public_ip = "def get_public_ip():\n"
+    get_public_ip += '\tresp = requests.get("http://api.ipify.org/").content.decode()\n'
+    get_public_ip += "\treturn resp\n\n"
+    output_file.write(get_public_ip)
+
+    # Storing URLs
+    service_ports = services_config_coll.find()
+    urls = "pub_ip = get_public_ip()\n"
+
+    urls += 'sensor_url = f"http://{pub_ip}:'+ service_ports[0]["sensor_service"]+'/"\n'
+    urls += 'model_url = f"http://{pub_ip}:'+ service_ports[0]["model_service"]+'/"\n'
+    urls += 'controller_url = f"http://{pub_ip}:'+ service_ports[0]["controller_service"]+'/"\n'
+    output_file.write(urls)
+
+    definition = "def get_details(name):\n"
+    for function in data["function_details"]:
+    # print(function)
+        details = data['function_details'][function]
+        definition += '\tif name == "'+ function +'":\n'
+        definition += '\t\t'+function+'_details = {'
+        for key, value in details.items():
+            # print(key, value)
+            definition += '"' + key + '": "' +str(value) + '",'
+        definition = definition[:-1] + '}\n'
+        definition += '\t\treturn '+function+'_details\n\n'
+    output_file.write(definition)
+
+
+    sensor_data = 'def get_sensor_data(name):\n'
+    sensor_data += '\tdetails = get_details(name)\n'
+    sensor_data += '\tjsonObj = {"sensor_type": details["sensor_type"], "sensor_location": details["sensor_location"] }\n'
+    sensor_data += '\tresponse = requests.post(url=sensor_url+'+'"getSensorInstances"'+', json=jsonObj).content\n'
+    sensor_data += '\tdata = json.loads(response.decode())\n'
+    sensor_data += '\tall_instances = data["sensor_instances"]\n'
+    sensor_data += '\tsensor_instances = random.sample(all_instances, str(details["no_of_instances"]))\n'
+    sensor_data += '\tdata = []\n'
+    sensor_data += '\tfor i in range(len(sensor_instances)):\n'
+    sensor_data += '\t\tjsonObj = {"topic_name": sensor_instances[i]}\n'
+    sensor_data += '\t\tresponse = requests.post(url=sensor_url+'+'"getSensorData"'+', json=jsonObj).content\n'
+    sensor_data += '\t\tdata = json.loads(response.decode())\n'
+    sensor_data += '\t\tdata = data["sensor_data"]\n'
+    sensor_data += '\t\tdata.append(data[-1])\n'
+    sensor_data += '\treturn data\n\n'
+    # print(sensor_data)
+    output_file.write(sensor_data)
+
+    predict = 'def predict(name, data):\n'
+    predict += '\tdetails = get_details(name)\n'
+    predict += '\tjsonObj = {"data": data.tolist(), "model_name": details["model_name"] }\n'
+    predict += '\tresponse = requests.post(url=model_url+'+'"predict"'+', json=jsonObj).content\n'
+    predict += '\tdata = json.loads(response.decode())\n'
+    predict += '\tprediction = data["predicted_value"]\n'
+    predict += '\treturn prediction\n\n'
+    # print(predict)
+    output_file.write(predict)
+
+    controller = 'def controller_action(name, data):\n'
+    controller += '\tdetails = get_details(name)\n'
+    controller += '\tresults = []\n'
+    controller += '\tfor controller in details["controllers"]:\n'
+    controller += '\t\tjsonObj = {"sensor_type": controller["controller_type"], "sensor_location": controller["controller_location"]}\n'
+    controller += '\t\tresponse = requests.post(url=controller_url+'+'"getControlInstances"'+', json=jsonObj).content\n'
+    controller += '\t\tdata = json.loads(response.decode())\n'
+    controller += '\t\tall_instances = data["control_instances"]\n'
+    controller += '\t\tinstance = all_instances[0]\n'
+    controller += '\t\tjsonObj = {"sensor_type": instance["sensor_type"], "sensor_ip": instance["sensor_ip"], "sensor_port": instance["sensor_port"], "data": int(data)}\n'
+    controller += '\t\tresponse = requests.post(url=controller_url+'+'"performAction"'+', json=jsonObj).content\n'
+    controller += '\t\tresults.append(response.decode())\n'
+    controller += '\treturn results\n\n'
+
+    output_file.write(controller)
+
 
 @app.route("/schedule_model_request", methods=["POST"])
 def schedule_model_request():
@@ -222,6 +308,8 @@ def upload_file():
             filename = secure_filename(file.filename)
             logging.warning(request.files)
             json_data = json.loads(request.files['file'].read().decode('utf-8'))
+            generate_api(json_data)
+
             logging.warning(json_data)
             app_config = list(db.application.find({"_id": json_data['application-name']}))[0]
             flag = True
@@ -244,6 +332,8 @@ def upload_file():
                         
                     upload_local_file(connection_string, request.files['file'].read(), share_name, 'application_repo/'+ filename.split('.')[0]+ '/'+ filename)
                     # add_schedule(filename.split('.')[0])
+                    api_file = open("api.py", "r")
+                    upload_local_file(connection_string, api_file.read(), share_name, 'application_repo/'+ filename.split('.')[0]+ '/api.py')
 
                     app_instance_port = 50000
                     json_data['port_num'] = app_instance_port
