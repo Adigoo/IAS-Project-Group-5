@@ -3,18 +3,18 @@
         {
             "sensor_type": "fan",
             "sensor_ip": "127.0.0.1",
-            "sensor_port": "7000",
-            "sensor_location": "vindhya-block",
+            "sensor_port": "45001",
+            "sensor_location": "vindhya-classroom",
             "control_functions": [
                 "switchOn",
                 "switchOff"
             ]
         },
         {
-            "sensor_type": "ac",
+            "sensor_type": "light",
             "sensor_ip": "127.0.0.1",
-            "sensor_port": "7001",
-            "sensor_location": "vindhya-block",
+            "sensor_port": "45002",
+            "sensor_location": "vindhya-classroom",
             "control_functions": [
                 "switchOn",
                 "switchOff"

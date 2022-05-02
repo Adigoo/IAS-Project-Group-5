@@ -7,9 +7,9 @@ app = Flask(__name__)
 def performAction():
     data = request.json
     if data['data'] == 0:
-        return "Turn Off AC"
+        return "Turn Off light"
     else:
-        return "Turn On AC"
+        return "Turn On light"
 
 if __name__ == "__main__":
     port = sys.argv[1]

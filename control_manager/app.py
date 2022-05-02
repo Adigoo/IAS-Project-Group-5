@@ -24,11 +24,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route("/performAction", methods=["GET", "POST"])
 def performAction():
     instance = request.json
-    url = "http://" + instance["sensor_ip"] + ":" + str(instance["sensor_port"]) +"/"
-    if instance["sensor_type"] == "fan":
-        url += "fanAction"
-    elif instance["sensor_type"] == "ac":
-        url += "acAction"
+    url = "http://" + str(instance["sensor_ip"]) + ":" + str(instance["sensor_port"]) +"/performAction"
     response = requests.post(url, json={
         "data": instance["data"]
     }).content
@@ -51,12 +47,7 @@ if __name__ == "__main__":
         logging.warning("Collection CREATED...")
         control_manager.register_controllers_from_json("control_config.json")
     
-    
-    
     service_ports = services_config_coll.find()
 
     controller_service_port = service_ports[0]['controller_service']
-
-
-
     app.run(debug=True, host='0.0.0.0', port=controller_service_port)

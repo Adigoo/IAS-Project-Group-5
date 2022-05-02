@@ -3,7 +3,7 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-@app.route("/fanAction", methods=["POST", "GET"])
+@app.route("/performAction", methods=["POST", "GET"])
 def performAction():
     data = request.json
     if data['data'] == 0:

@@ -8,8 +8,6 @@ localhost_ip_address = pub_ip
 # localhost_ip_address = "localhost"
 
 
-
-
 #########################################
 def perform_action(sensor_type, sensor_location):
     ip, port = control_db.get_ip_and_port(sensor_type, sensor_location)
