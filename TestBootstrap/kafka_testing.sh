@@ -38,6 +38,7 @@ PUBLIC_IP_ADDRESS=$(az vm create --resource-group $RESOURCE_GROUP_NAME \
   --admin-password Ias@12345678\
   --query 'publicIpAddress' -o json)
 VM_PUBLIC_IPs+=($PUBLIC_IP_ADDRESS)
+
 az vm open-port --port 22 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 400
 az vm open-port --port 80 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 600
 az vm open-port --port 5000 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 700
@@ -54,8 +55,41 @@ az vm open-port --port 5010 --resource-group $RESOURCE_GROUP_NAME --name $vm_nam
 az vm open-port --port 2376 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 711
 az vm open-port --port 9092 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 800
 az vm open-port --port 8004 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1200
+
+
+
 az vm open-port --port 10000 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1100
+az vm open-port --port 40000 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1110
+az vm open-port --port 40001 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1120
+az vm open-port --port 40002 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1130
+az vm open-port --port 40003 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1140
+az vm open-port --port 40004 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1150
+az vm open-port --port 40005 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1160
+az vm open-port --port 40006 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1170
+az vm open-port --port 40007 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1180
+az vm open-port --port 45000 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1210
+az vm open-port --port 45001 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1220
+az vm open-port --port 45002 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1230
+az vm open-port --port 45003 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1240
+az vm open-port --port 45004 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1250
+az vm open-port --port 45005 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1260
+az vm open-port --port 45006 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1270
+az vm open-port --port 45007 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1280
+az vm open-port --port 45008 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1290
+az vm open-port --port 45009 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1291
+az vm open-port --port 45010 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1292
+az vm open-port --port 45011 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1293
+az vm open-port --port 45012 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1294
+az vm open-port --port 45013 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1295
 az vm open-port --port 50000 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1300
+az vm open-port --port 50001 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1320
+az vm open-port --port 50002 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1330
+az vm open-port --port 50003 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1340
+az vm open-port --port 50004 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1350
+az vm open-port --port 50005 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1360
+az vm open-port --port 50006 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1370
+az vm open-port --port 50007 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 1380
+
 done
 
 printf "\n\n"
@@ -74,7 +108,7 @@ do
   UN_NEW="${UN_NEW#\'}"
   echo $IP_NEW
   echo $UN_NEW
-  sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo apt-get install sshpass; sudo apt install -y python3-pip;sudo -H pip3 install --upgrade pip; pip3 install kafka-python;pip3 install azure-storage-file-share;pip install Flask; sudo chmod 777 /var/run/docker.sock; git clone https://github.com/Adigoo/IAS-Project-Group-5.git;"
+  sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo apt-get install sshpass; sudo apt install -y python3-pip;sudo -H pip3 install --upgrade pip; pip3 install kafka-python;pip3 install azure-storage-file-share;pip install Flask; sudo chmod 777 /var/run/docker.sock; git clone https://github.com/Adigoo/IAS-Project-Group-5.git; docker pull python:3; docker run python:3;"
   # sshpass -f pass scp -o StrictHostKeyChecking=no -r node $UN_NEW@$IP_NEW:node
   # sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "cd node && python3 node2.py" &
 
