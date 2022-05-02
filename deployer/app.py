@@ -89,6 +89,7 @@ def runImg():
         res = requests.post(url=url_to_request,
                             json=recieved_json).json()
         
+        logging.warning(f"res = {res}")
         recieved_json['container_name'] = res['container_name']
         recieved_json['model_name'] = model_name
         recieved_json['vm_ip'] = actual_ip
