@@ -1,17 +1,43 @@
 import logging
 from time import sleep
+import kafka
+# import kafka_manager
 from kafka import KafkaProducer, KafkaConsumer, TopicPartition
 import sensor_data
 import threading
 import sensor_db
 import requests
+import pymongo
+
 
 # localhost_ip_address = "172.17.0.1"
 pub_ip = requests.get("http://api.ipify.org").content.decode()
 localhost_ip_address = pub_ip
 # localhost_ip_address = "localhost"
 
-bootstrap_servers = [f'{localhost_ip_address}:9092']
+
+##################
+
+client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
+db_name = "ias_database"
+client = pymongo.MongoClient(client)
+mydb = client[db_name]
+vm_ips_coll = mydb["vm_ips"]
+
+actual_config = vm_ips_coll.find_one(
+    {"_id": "kafkavm"}
+)
+
+# print(actual_config)
+kafka_vm_ip = actual_config["vm_ip"]
+kafka_vm_ip = kafka_vm_ip.replace('"', '')
+# to remove redundant double quotes
+
+##################
+
+
+# bootstrap_servers = [f'{localhost_ip_address}:9092']
+bootstrap_servers = [f'{kafka_vm_ip}:9092']
 
 ################################# KAFKA CREATE/PRODUCE/CONSUME #########################################
 
