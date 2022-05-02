@@ -12,7 +12,7 @@
       function autoRefresh() {
           window.location = window.location.href;
       }
-      setInterval('autoRefresh()', 2000);
+      setInterval('autoRefresh()', 5000);
   </script>
 
 </head>
@@ -39,30 +39,7 @@
         </div>
       </nav>
       
-      <h1 id="intervaltext" ></h1> 
-      <!--        <script>
-            function autoRefresh(){   
-
-            text = "Average Attentiveness :- {{average_attentiveness}} At Time {{attentive_time}}";
-            text  =  text+"<br>";    
-            document.getElementById("intervaltext").innerHTML = text;
-            
-            $.post({
-                url: '/attention',
-                success: function() {
-                    console.log("Hello");
-                },
-                error: function() { console.log("Error"); }
-            }); 
-
-
-            setInterval('autoRefresh()', 3000) 
-            }
-            
-            autoRefresh();
-        
-            
-
-        </script>-->
+      <h1 id="intervaltext" >{{average_attentiveness}} {{attentive_time}}</h1> 
+      
     </body>
 </html>

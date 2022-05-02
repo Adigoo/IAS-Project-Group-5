@@ -38,7 +38,7 @@ def change_value():
     global attentive_time
     global average_attentiveness
 
-    for i in range(0,5):
+    while(1):
         attentive_time+=1
         average_attentiveness+=1
         sleep(2)
@@ -104,8 +104,9 @@ if __name__ == "__main__":
     # t1 = threading.Thread(target = fire_detection)
     # t2 = threading.Thread(target = student_motion_detect)
     # t3 = threading.Thread(target = attention_detection)
-    
-    app.run(port = 5050)
-    t4 = threading.Thread(target = change_value())
+    t4 = threading.Thread(target = change_value)
+    t4.start()
+
+    app.run(debug = True, port = 5050)
     
     
