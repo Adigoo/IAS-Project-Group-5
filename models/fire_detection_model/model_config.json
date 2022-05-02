@@ -1,0 +1,8 @@
+{
+    "model": [
+        {
+            "model_name": "fire_detection_model",
+            "model_type": "decision_tree"
+        }
+    ]
+}

@@ -4,6 +4,8 @@ import gdown
 import pickle
 from io import BytesIO
 from PIL import Image
+
+
 class Attentiveness:
 
     def preprocess(self, img):
@@ -20,7 +22,7 @@ class Attentiveness:
         return result
         pass
 
- 
+
     def predict(self, img):
         img = self.preprocessing(img)
         try: 
@@ -51,6 +53,8 @@ class Attentiveness:
                 return 0
             
             return 1
+        
+        
         return 0
 
 
@@ -59,11 +63,11 @@ class Attentiveness:
 
 obj = Attentiveness()
 print(type(obj))
-with open ("model.pkl","wb") as handle:
+with open ("attention_detection_model.pkl","wb") as handle:
     pickle.dump(obj,handle)
 
 
-file = open("model.pkl", "rb")
+# file = open("attention_detection_model.pkl", "rb")
 
-x = pickle.load(file)
-print(x.postprocess("hsahsa"))
+# x = pickle.load(file)
+# print(x.postprocess("hsahsa"))

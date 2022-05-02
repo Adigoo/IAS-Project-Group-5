@@ -62,5 +62,5 @@ class Peripheral:
 
 obj = Peripheral()
 
-with open ("model.pkl","wb") as handle:
+with open ("peripheral_control_model.pkl","wb") as handle:
     pickle.dump(obj,handle)

@@ -1,0 +1,8 @@
+{
+    "model": [
+        {
+            "model_name": "peripheral_control_model",
+            "model_type": "decision_tree"
+        }
+    ]
+}

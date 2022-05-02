@@ -58,6 +58,13 @@ def generate_requirements():
         f.write("numpy\n")
         f.write("flask\n")
         f.write("requests\n")
+        f.write("gdown\n")
+        f.write("opencv-python\n")
+        f.write("io\n")
+        f.write("Pillow\n")
+        f.write("scipy\n")
+        f.write("imageio\n")
+        
 
 
 def generate_server_file(port_num, model_name):
