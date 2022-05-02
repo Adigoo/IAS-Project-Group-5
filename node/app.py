@@ -207,28 +207,53 @@ def runApp():
 
         ################
 
-        command = f"docker build -t {app_name} ."
+        #command = f"docker build -t {app_name} ."
         # os.system()
         # out = subprocess.check_output(command, shell=True)
-        os.system(command)
+        #os.system(command)
         # out = out.decode('utf-8')
         # out = out.strip()
 
         # logging.warning(f"output of build ommand = {out}")
 
-        command = f"docker run -d --rm -it -p {port_num}:5000 -v /etc/localtime:/etc/localtime:ro --net=host  --name {app_name} {app_name}"
+        #command = f"docker run -d --rm -it -p {port_num}:5000 -v /etc/localtime:/etc/localtime:ro --net=host  --name {app_name} {app_name}"
         # os.system(command)
-        out = subprocess.check_output(command, shell=True)
-        out = out.decode('utf-8')
-        out = out.strip()
-        logging.warning(f"output of run ommand = {out}")
+        #out = subprocess.check_output(command, shell=True)
+        #out = out.decode('utf-8')
+        #out = out.strip()
+        #logging.warning(f"output of run ommand = {out}")
 
 
         pub_ip = requests.get("http://api.ipify.org").content.decode()
         localhost_ip_address = pub_ip
         # localhost_ip_address = "localhost"
+        
+        command = f"docker rmi image_{app_name} ."
+        os.system(command=command)
+        logging.warning("App Image deleted")
 
-        return jsonify(container_id=out, port=port_num, ip=localhost_ip_address)
+        command = f"docker stop -f container_{app_name}"
+        os.system(command=command)
+
+        command = f"docker build -t image_{app_name} ."
+        os.system(command=command)
+        logging.warning(f"Image created image_{app_name}")
+
+        # logging.warning(f"output of build ommand = {out}")
+
+        command = f"docker run -d --rm -it -v /etc/localtime:/etc/localtime:ro -p {port_num}:5000  --name container_{app_name} image_{app_name}"
+
+        # out = subprocess.check_output(command, shell=True)
+        # out = out.decode('utf-8')
+        # out = out.strip()
+        os.system(command=command)
+        logging.warning("App container started")
+        # logging.warning(f"output of run ommand = {out}")
+
+
+        container_name = f"container_{app_name}"
+
+        return jsonify(container_name=container_name, port=port_num, ip=localhost_ip_address)
         
 
 

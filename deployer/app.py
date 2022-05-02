@@ -48,7 +48,7 @@ def runImg():
     logging.warning("got request from scheduler")
     recieved_json = request.get_json()
     model_port=recieved_json['port_num']
-    model_name=recieved_json['model_name']
+    
     
 
     logging.warning(f"recieved_json = {recieved_json}")
@@ -77,6 +77,7 @@ def runImg():
 
     if "schedule_type" in recieved_json.keys() and recieved_json['schedule_type'] == 1:
         # MODEL DEPLOY REQUEST
+        model_name=recieved_json['model_name']
         logger.warning(f"GOT MODEL shceduling reeust {recieved_json['schedule_type'] == 1}")
         recieved_json['fpath'] = 'model_repo/' + recieved_json['model_name']
         logging.warning("hello, {recieved_json}")
@@ -108,6 +109,7 @@ def runImg():
 
     else:
         # APP DEPLOY REQUEST
+        app_name=recieved_json['app_name']
         recieved_json['fpath'] = 'application_repo/' + recieved_json['app_name']
         logging.warning("hello, {recieved_json}")
 
@@ -132,9 +134,9 @@ def runImg():
         res = requests.post(url=url_to_request,
                             json=recieved_json).json()
         
-        recieved_json['container_id'] = res['container_id']
+        recieved_json['container_name'] = res['container_name']
 
-        logging.warning(f"recieved_json['container_id'] = {recieved_json['container_id']}")
+        logging.warning(f"recieved_json['container_name'] = {recieved_json['container_name']}")
         # recieved_json["config_id"] = recieved_json["config_id"])
         try:
             db.deployer_log.insert_one(recieved_json)

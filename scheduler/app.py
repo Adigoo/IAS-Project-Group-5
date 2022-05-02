@@ -335,7 +335,7 @@ def upload_file():
                     api_file = open("api.py", "r")
                     upload_local_file(connection_string, api_file.read(), share_name, 'application_repo/'+ filename.split('.')[0]+ '/api.py')
 
-                    app_instance_port = 50000
+                    app_instance_port =random.randint(50001,60000)
                     json_data['port_num'] = app_instance_port
                     logging.warning(json_data)
                     add_schedule(json_data)
