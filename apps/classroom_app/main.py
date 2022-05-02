@@ -7,21 +7,25 @@ from time import sleep
 from datetime import datetime
 now = datetime.now()
 
-app = Flask()
+app = Flask(__name__)
 
-present_list = set()
+present_list = set(["asdas","asdasd","asd"])
 class_attention = ""
 students_dict = {0 : 'Adriana Lima',1 : 'Alex Lawther',2: 'Alexandra Daddario',
 3 : 'Alvaro Morte',4 : 'Amanda Crew',5 : 'Andy Samberg',
 6 : 'Anne Hathaway',7 : 'Anthony Mackie',8: 'alycia dabnem carey',
 9 : 'amber heard'}
 
+average_attentiveness = 0
+attentive_time = 0
+fan_action = ""
+
 def fan_control_system():
     while(1):
         sensor_data = api.get_sensor_data("fan_control_system")
         prediction = api.predict("fan_control_system", sensor_data)
         response = api.controller_action("fan_control_system", prediction)
-        print(response)
+        fan_action = response
         sleep(60)
 
     
@@ -47,6 +51,8 @@ def peripheral_control_system():
         sleep(60)
 
 def attendance_system():
+    global average_attentiveness
+    global attentive_time
     while(1):
         # sensor_name = "Camera"
         # model_name = "model1"
@@ -57,6 +63,8 @@ def attendance_system():
             present_list.add(students_dict[i])
 
         class_attention = attention_system()
+        attentive_time = now.strftime("%H:%M:%S")
+
         # Send notification
 
         sleep(60)
@@ -121,28 +129,30 @@ def change_value():
 
 @app.route('/')
 def home():
-    return render_template("index.html")
+    return render_template("home.html")
 
 @app.route('/startClass', methods = ["GET"])
-def attendance():
-    return 1
-    pass
+def startClass():
+    global attentive_time
+    global average_attentiveness
+    return render_template("start_class.html", attentive_time=attentive_time, average_attentiveness=average_attentiveness)
 
-@app.route('/endclass', methods = ["GET"])
+
+@app.route('/endClass', methods = ["GET"])
 def endclass():
-    pass
+    return render_template("end_class.html", present_list=present_list)
 
 
 @app.route('/monitorPeripheral')
-def attention():
+def monitorPeripheral():
     global attentive_time
     global average_attentiveness
     return render_template("attention.html", attentive_time=attentive_time, average_attentiveness=average_attentiveness)
 
 
 @app.route('/monitorFan')
-def peripherals():
-    pass
+def monitorFan():
+    return render_template("monitor_fans.html")
 
 
 if __name__ == "__main__":
@@ -150,8 +160,8 @@ if __name__ == "__main__":
     t2 = threading.Thread(target = peripheral_control_system)
     t3 = threading.Thread(target = attendance_system)
     t4 = threading.Thread(target = change_value)
-    t4.start()
     t1.start()
     t2.start()
     t3.start()
-    app.run(debug=True, port="0.0.0.0")
+    t4.start()
+    app.run(debug=True, port= 8000)
