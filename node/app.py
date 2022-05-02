@@ -309,4 +309,4 @@ if __name__ == "__main__":
     # generate_requirements()
     # generate_docker_file_for_model("ac_prediction_model")
 
-    app.run(debug=True, use_reloader=False, host="0.0.0.0", port=1200)
+    app.run(debug=True, use_reloader=False, host="0.0.0.0", port=5000)
