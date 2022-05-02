@@ -100,5 +100,5 @@ if __name__ == "__main__":
 
     service_ports = services_config_coll.find()
     sensor_service_port = service_ports[0]['sensor_service']
-    app.run(debug=True, host='0.0.0.0', port=sensor_service_port)
+    app.run(debug=True,use_reloader=False, host='0.0.0.0', port=sensor_service_port)
 

@@ -194,4 +194,4 @@ if __name__ == '__main__':
 
     deployer_service_port = service_ports[0]['deployer_service']
 
-    app.run(debug=True, host='0.0.0.0', port=deployer_service_port)
+    app.run(debug=True,use_reloader=False, host='0.0.0.0', port=deployer_service_port)

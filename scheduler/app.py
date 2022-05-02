@@ -368,4 +368,4 @@ if __name__ == "__main__":
 
     scheduler_service_port = service_ports[0]['scheduler_service']
 
-    app.run(debug=True, host="0.0.0.0", port=scheduler_service_port)
+    app.run(debug=True,use_reloader=False, host="0.0.0.0", port=scheduler_service_port)
