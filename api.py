@@ -13,19 +13,18 @@ def readFromFile(path, key):
     data = json.load(f)
     if key == "sensor_details":
         data = data["sensor_details"]
-        return data['sensor_type'], data['sensor_location'], data['no_of_instances']
+        return data
     elif key == "controller_details":
         data = data["controller_details"]
-        return data['sensor_type'], data['sensor_location']
-
+        return data
 
 def get_public_ip():
     # resp = requests.get("http://api.ipify.org/").content.decode()
     return "172.17.0.1"
 
 
-def getSensorInstances(path="ac_app.json"):
-    sensor_type, sensor_location, no_of_instances = readFromFile(
+def getSensorInstances(path="app.json"):
+    sensor_details = readFromFile(
         path, "sensor_details")
 
     pub_ip = get_public_ip()
@@ -40,7 +39,7 @@ def getSensorInstances(path="ac_app.json"):
     return sensor_instances, no_of_instances
 
 
-def getControlInstances(path="ac_app.json"):
+def getControlInstances(path="app.json"):
     sensor_type, sensor_location = readFromFile(path, "controller_details")
 
     pub_ip = get_public_ip()

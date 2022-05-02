@@ -10,7 +10,6 @@ client = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = client["SensorDatabase"]
 instancesdb = mydb["SensorInstances"]
 # types = mydb["SensorTypes"]
-
 # Deprecated
 # def register_sensor_type(sensor_type):
 #     types = mydb["SensorTypes"]
