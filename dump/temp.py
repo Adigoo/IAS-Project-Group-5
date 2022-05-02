@@ -42,32 +42,6 @@ for function in data["function_details"]:
 output_file.write(definition)
 
 
-# for function in data["function_details"]:
-#     # print(function)
-#     details = data['function_details'][function]
-#     function_def = "def " + function + "():\n"
-#     function_def += '\tjsonObj = {"sensor_type": ' + details['sensor_type'] + ', sensor_location: ' + details['sensor_location'] + '}\n'
-#     function_def += '\tresponse = requests.post(url=sensor_url+'+'"getSensorInstances"'+', json=jsonObj).content\n'
-#     function_def += '\tdata = json.loads(response.decode())\n'
-#     function_def += '\tsensor_instances = data["sensor_instances"]\n'
-#     function_def += '\tsensor_instances = random.sample(all_instances, '+ str(details['no_of_instances']) +')\n'
-#     function_def += '\t'+function+'_data = []\n'
-#     function_def += '\tfor i in range(len(sensor_instances)):\n'
-#     function_def += '\t\tjsonObj = {"topic_name": sensor_instances[i]}\n'
-#     function_def += '\t\tresponse = requests.post(url=sensor_url+'+'"getSensorData"'+', json=jsonObj).content\n'
-#     function_def += '\t\tdata = json.loads(response.decode())\n'
-#     function_def += '\t\tdata = data["sensor_data"]\n'
-#     function_def += '\t\t'+function+'_data.append(data[-1])\n'
-#     function_def += '\tfor d in '+ function+ '_data:\n'
-#     function_def += '\t\tjsonObj = {"data": d.tolist(), "model_name": ' + details['model_name'] + "}\n"
-#     function_def += '\t\tresponse = requests.post(url=model_url+'+'"predict"'+', json=jsonObj).content\n'
-#     function_def += '\t\tdata = json.loads(response.decode())\n'
-#     function_def += '\t\tprediction = data["predicted_value"]\n'
-#     function_def += ''
-#     print(function_def)
-
-
-
 sensor_data = 'def get_sensor_data(name):\n'
 sensor_data += '\tdetails = get_details(name)\n'
 sensor_data += '\tjsonObj = {"sensor_type": details["sensor_type"], "sensor_location": details["sensor_location"] }\n'
@@ -112,10 +86,3 @@ controller += '\treturn results\n\n'
 
 output_file.write(controller)
 
-
-# details = data["function_details"]["attendance_system"]
-# # print(details)
-# for controller in details["controllers"]:
-#     jsonObj = {"sensor_type": controller["controller_type"], "sensor_location": controller["controller_location"]}
-#     print(jsonObj)
-# print(data)
