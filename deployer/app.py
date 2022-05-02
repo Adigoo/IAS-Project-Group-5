@@ -57,9 +57,11 @@ def runImg():
     service_ports = services_config_coll.find()
     node_service_port = service_ports[0]['node_service']
 
-    logging.warning("sending request to node manager")
+    node_manager_url = f"http://{localhost_ip_address}:" +str(node_service_port) + "/getNode"
+    logging.warning(f"sending request to node manager @ \n{node_manager_url}")
+    logging.warning(f"length = {len(node_manager_url)}")
     resp = requests.get(
-        f"http://{localhost_ip_address}:" +str(node_service_port) + "/getNode"
+        node_manager_url
     ).content.decode()
 
     node_endpoint = resp
