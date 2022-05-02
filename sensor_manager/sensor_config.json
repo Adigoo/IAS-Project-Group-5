@@ -1,22 +1,34 @@
 {
     "sensor_instances": [
        {
-        "sensor_type": "light",
+        "sensor_type": "camera",
         "sensor_ip": "127.0.0.1",
         "sensor_port": "9092",
-        "sensor_location": "himalaya-block"  
+        "sensor_location": "vindhya-classroom"  
        },
        {
-        "sensor_type": "light",
+        "sensor_type": "camera",
         "sensor_ip": "127.0.0.1",
         "sensor_port": "9093",
-        "sensor_location": "himalaya-block"  
+        "sensor_location": "vindhya-classroom"  
        },
        {
-        "sensor_type": "temp",
+        "sensor_type": "camera",
         "sensor_ip": "127.0.0.1",
         "sensor_port": "9094",
-        "sensor_location": "vindhya-block"  
-       }
+        "sensor_location": "vindhya-classroom"  
+       },
+       {
+        "sensor_type": "camera",
+        "sensor_ip": "127.0.0.1",
+        "sensor_port": "9091",
+        "sensor_location": "vindhya-classroom"  
+       },
+       {
+         "sensor_type": "temp",
+         "sensor_ip": "127.0.0.1",
+         "sensor_port": "9095",
+         "sensor_location": "vindhya-classroom"  
+        }
     ]
  }

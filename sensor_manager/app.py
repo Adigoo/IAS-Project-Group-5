@@ -97,14 +97,8 @@ if __name__ == "__main__":
     else:
         logging.warning("DATABASE ALREADY EXISTS...")
         kafka_manager.produce_sensors_data()
-    
-
 
     service_ports = services_config_coll.find()
-
     sensor_service_port = service_ports[0]['sensor_service']
-
-
-
     app.run(debug=True, host='0.0.0.0', port=sensor_service_port)
 

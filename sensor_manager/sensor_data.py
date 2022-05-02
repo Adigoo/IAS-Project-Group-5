@@ -28,16 +28,9 @@ def produceLightData():
     return brightness
 
 def produceImage():
-    print("hey")
-    images = instancesdb.find()
-    # imgs = []
-    for img in images:
-        print(img)
-        break
-    #     imgs.append(img['data'])
-    #     # print(img)
-    # # print(imgs)
-    # r = random.randint(0, len(imgs))
-    # return imgs[r]
-
+    rand = random.randint(0, 90)
+    images = instancesdb.find({"id": rand})
+    for i in images:
+        img = i["data"]
+    return img
 produceImage()

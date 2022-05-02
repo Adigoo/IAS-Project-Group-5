@@ -55,7 +55,7 @@ def produce_data(topic_name):
     while(True):
         data = sensor_data.produceData(topic_name)
         producer.send(topic_name, bytes(str(data), 'utf-8'))
-        sleep(60)
+        sleep(30)
 
 
 def consume_data(topic_name):
