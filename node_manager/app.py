@@ -61,7 +61,7 @@ def getNode():
         )
 
         logging.warning(f"model_vm = {model_vm}")
-        logging.warning(f"model_vm = {model_vm.keys()}")
+        # logging.warning(f"model_vm = {model_vm.keys()}")
         logging.warning(f"model_vm['vm_ip'] = {model_vm['vm_ip']}")
 
         app_vm = vm_ips_coll.find(
