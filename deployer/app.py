@@ -93,6 +93,7 @@ def runImg():
                             json=recieved_json).json()
         
         logging.warning(f"res = {res}")
+    
         recieved_json['container_name'] = res['container_name']
         recieved_json['model_name'] = model_name
         recieved_json['vm_ip'] = actual_ip
@@ -137,12 +138,16 @@ def runImg():
                             json=recieved_json).json()
         
         recieved_json['container_name'] = res['container_name']
-
+        recieved_json['_id'] = f"{app_name}_{recieved_json['config_id']}"
         logging.warning(f"recieved_json['container_name'] = {recieved_json['container_name']}")
         # recieved_json["config_id"] = recieved_json["config_id"])
+        
+        
+        
         try:
             db.deployer_log.insert_one(recieved_json)
-        except:
+        except Exception as er:
+            logging.warning(er)
             pass
     
     return 'Requests to the node for deploying'
