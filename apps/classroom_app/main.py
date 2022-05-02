@@ -42,7 +42,7 @@ def peripheral_control_system():
         action.append(StudentMD_pred_data['fan'])
         action.append(StudentMD_pred_data['light'])
 
-        result = api.controllerAction("peripheral_controller_system",action)
+        result = api.controller_action("peripheral_controller_system",action)
         print(result)
         # api.controllerAction(AC_action,"AC_controller")
         # api.controllerAction(Fan_action,"Fan_controller")

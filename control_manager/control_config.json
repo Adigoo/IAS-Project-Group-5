@@ -1,6 +1,16 @@
 {
     "control_instances": [
         {
+            "sensor_type": "ac",
+            "sensor_ip": "127.0.0.1",
+            "sensor_port": "45000",
+            "sensor_location": "vindhya-classroom",
+            "control_functions": [
+                "switchOn",
+                "switchOff"
+            ]
+        },
+        {
             "sensor_type": "fan",
             "sensor_ip": "127.0.0.1",
             "sensor_port": "45001",
