@@ -84,7 +84,8 @@ def getNode():
         data.append(app_vm_ip)
 
         logging.warning(f"data = {data}")
-    except:
+    except Exception as er:
+        logging.warning(er)
         logging.warning("SOME exception occurred")
         pass
 
@@ -106,6 +107,7 @@ def getNode():
     # ni=data["node"]
     # logging.warning(ni)
     for item in node_list:
+        logging.warning(f"trying to get loads")
         rgl = item+"/getLoad"
         req = requests.get(url=rgl).json()
         cl = str(req['cpu_load'])
@@ -121,7 +123,7 @@ def getNode():
     rdf = srt[0]
     ke = list(loads.keys())
     logging.warning(ke[0])
-    logging.warning("Deploy on {ke[0]} file=sys.stderr")
+    logging.warning(f"Deploy on {ke[0]} file=sys.stderr")
     logging.warning(cl+"\t"+cm)
     return ke[0]
 
