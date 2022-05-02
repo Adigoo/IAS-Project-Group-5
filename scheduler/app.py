@@ -4,6 +4,8 @@ from distutils.command.config import config
 import requests
 import subprocess
 import os
+import pytz
+
 import sys
 from datetime import datetime
 import threading
@@ -69,8 +71,18 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+
+def getCurrentTimeInIST():
+    IST = pytz.timezone('Asia/Kolkata')
+    print("IST in Default Format : ", datetime.now(IST))
+    datetime_ist = datetime.now(IST)
+    # print(datetime_ist.strftime('%H:%M'))
+    return datetime_ist.strftime("%Y-%m-%d %H:%M:%S")
+
+
+
 def add_schedule(json_data):
-    logging.warning(datetime.now())
+    logging.warning(getCurrentTimeInIST())
     try:
         app_name = json_data["application-name"]
         logging.warning(app_name)
@@ -80,7 +92,7 @@ def add_schedule(json_data):
         # data = list(db.configuration.find({"application-name": app_name}))
         # logging.warning(data)
         # data = data[0]
-        logging.warning(datetime.now())
+        logging.warning(getCurrentTimeInIST())
         logging.warning(f"data['start-time'] = {json_data['start-time']}")
         start_time = json_data["start-time"]
         end_time = json_data["end-time"]
@@ -111,8 +123,8 @@ def check_in_time():
     logging.warning("thread1")
     # count_lis = 0
     while(1):
-        now = datetime.now()
-        current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+        # now = datetime.now()
+        current_time = getCurrentTimeInIST()
         # logging.warning("Current Time =", current_time)
         for each_app_time in in_time:
             if(current_time == each_app_time[1]):
@@ -140,8 +152,9 @@ def check_out_time():
     logging.warning("thread2")
     # count_lis = 0
     while(1):
-        now = datetime.now()
-        current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+        # now = datetime.now()
+        # current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+        current_time = getCurrentTimeInIST()
         for each_app_time in out_time:
             if(current_time == each_app_time[1]):
                 logging.warning("thread2")
