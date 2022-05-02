@@ -214,7 +214,7 @@ def download_model_directory(model_name):
 
 
 
-@app.route('predict', methods=["POST, GET"])
+@app.route('/predict', methods=["POST, GET"])
 def predict():
     json_data = request.get_json()
     deployer_log = mydb["deployer_log"]
