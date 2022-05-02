@@ -50,12 +50,9 @@ def getNode():
 
     node_service_port = service_ports[0]['node_service']
 
-
+    data = []
     try:
-        # data = list(db.nodes_collection.find({}))
-        # logging.warning(data)
-
-        ######
+        
         vm_ips_coll = mydb["vm_ips"]
         model_vm = vm_ips_coll.find(
             {"_id": "modelvm"}
@@ -74,7 +71,9 @@ def getNode():
         app_vm_ip = app_vm_ip.replace('"', '')
         app_vm_ip = app_vm_ip.replace("'", '')
 
-        data = [model_vm_ip, app_vm_ip]
+        # data = [model_vm_ip, app_vm_ip]
+        data.append(model_vm_ip)
+        data.append(app_vm_ip)
     except:
         pass
 
