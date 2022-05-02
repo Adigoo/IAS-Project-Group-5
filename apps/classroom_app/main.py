@@ -4,7 +4,7 @@ from flask import Flask, render_template
 import threading
 import api
 from time import sleep
-from datetime import datetime
+from datetime import date, datetime
 now = datetime.now()
 
 app = Flask(__name__)
@@ -19,10 +19,13 @@ students_dict = {0 : 'Adriana Lima',1 : 'Alex Lawther',2: 'Alexandra Daddario',
 average_attentiveness = 0
 attentive_time = 0
 fan_action = ""
+temp = ""
+p_action = ""
 
 def fan_control_system():
     while(1):
         sensor_data = api.get_sensor_data("fan_control_system")
+        temp = sensor_data
         prediction = api.predict("fan_control_system", sensor_data)
         response = api.controller_action("fan_control_system", prediction)
         fan_action = response
@@ -35,14 +38,9 @@ def peripheral_control_system():
         sensor_data = api.get_sensor_data("peripheral_control_system")
 
         # model_name = "StudentMD_model"
-        StudentMD_pred_data = api.predict("peripheral_control_system",sensor_data)
-        action = []
-        action.append(StudentMD_pred_data['pc'])
-        action.append(StudentMD_pred_data['ac'])
-        action.append(StudentMD_pred_data['fan'])
-        action.append(StudentMD_pred_data['light'])
+        p_action = api.predict("peripheral_control_system",sensor_data)
 
-        result = api.controllerAction("peripheral_controller_system",action)
+        result = api.controllerAction("peripheral_controller_system",p_action)
         print(result)
         # api.controllerAction(AC_action,"AC_controller")
         # api.controllerAction(Fan_action,"Fan_controller")
@@ -135,7 +133,7 @@ def home():
 def startClass():
     global attentive_time
     global average_attentiveness
-    return render_template("start_class.html", attentive_time=attentive_time, average_attentiveness=average_attentiveness)
+    return render_template("start_class.html", attentive_time=datetime.now(), average_attentiveness=average_attentiveness)
 
 
 @app.route('/endClass', methods = ["GET"])
@@ -147,12 +145,12 @@ def endclass():
 def monitorPeripheral():
     global attentive_time
     global average_attentiveness
-    return render_template("attention.html", attentive_time=attentive_time, average_attentiveness=average_attentiveness)
+    return render_template("monitor_peripheral.html", time_stamp=datetime.now(), action=p_action)
 
 
 @app.route('/monitorFan')
 def monitorFan():
-    return render_template("monitor_fans.html")
+    return render_template("monitor_fans.html", time_stamp=datetime.now(), temp=temp, action=fan_action)
 
 
 if __name__ == "__main__":
