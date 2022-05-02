@@ -112,27 +112,6 @@ def download_app(app_name):
     )
 
 
-# def get_free_port():
-#     while True:
-#         rand_port = random.randint(40000, 50000)
-
-#         a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-#         location = ("127.0.0.1", rand_port)
-#         result_of_check = a_socket.connect_ex(location)
-
-#         try:
-#             if result_of_check == 0:
-#                 logging.warning(f"Port is open {rand_port}")
-#                 a_socket.close()
-
-#                 return rand_port
-#             else:
-#                 logging.warning(f"Port is not open : {rand_port}")
-#                 a_socket.close()
-#         except:
-#             pass
-
 
 @app.route('/runapp', methods=['POST', 'GET'])
 def runApp():
@@ -169,6 +148,8 @@ def runApp():
         os.system(command=command)
         logging.warning("Image delted")
 
+        command = f"docker stop -f container_{model_name}"
+        os.system(command=command)
 
         command = f"docker build -t image_{model_name} ."
         os.system(command=command)
@@ -186,8 +167,8 @@ def runApp():
         # logging.warning(f"output of run ommand = {out}")
 
 
-
-        return jsonify(container_name=f"container_{model_name}")
+        container_name = f"container_{model_name}"
+        return jsonify(container_name=container_name)
     else:
         # for APP scheduling
         fpath = received_json['fpath']
