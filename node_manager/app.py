@@ -56,26 +56,26 @@ def getNode():
     try:
         
         vm_ips_coll = mydb["vm_ips"]
-        model_vm = vm_ips_coll.find(
+        model_vm = vm_ips_coll.find_one(
             {"_id": "modelvm"}
         )
 
         logging.warning(f"model_vm = {model_vm}")
         # logging.warning(f"model_vm = {model_vm.keys()}")
-        logging.warning(f"model_vm['vm_ip'] = {model_vm['vm_ip']}")
+        logging.warning(f'model_vm["vm_ip"] = {model_vm["vm_ip"]}')
 
-        app_vm = vm_ips_coll.find(
+        app_vm = vm_ips_coll.find_one(
             {"_id": "appvm"}
         )
 
         # print(actual_config)
         model_vm_ip = model_vm["vm_ip"]
-        logging.warning(f"model_vm['vm_ip'] = {model_vm['vm_ip']}")
+        logging.warning(f'model_vm["vm_ip"] = {model_vm["vm_ip"]}')
         model_vm_ip = model_vm_ip.replace('"', '')
         model_vm_ip = model_vm_ip.replace("'", '')
         # to remove redundant double quotes
         app_vm_ip = app_vm["vm_ip"]
-        logging.warning(f"app_vm['vm_ip'] = {app_vm['vm_ip']}")
+        logging.warning(f'app_vm["vm_ip"] = {app_vm["vm_ip"]}')
         app_vm_ip = app_vm_ip.replace('"', '')
         app_vm_ip = app_vm_ip.replace("'", '')
 
