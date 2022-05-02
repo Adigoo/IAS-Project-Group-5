@@ -5,19 +5,19 @@ from scipy.linalg import norm
 import pickle
 from scipy import sum, average
 
-def main():
+def main(im1,im2):
     # read images as 2D arrays (convert to grayscale for simplicity)
-    arr = imread("frame0001.jpg").astype(float)
-    if len(arr) == 3:
-        img1 =  average(arr, -1)  # average over the last axis (color channels)
+    # arr = imread("frame0001.jpg").astype(float)
+    if len(im1) == 3:
+        img1 =  average(img1, -1)  # average over the last axis (color channels)
     else:
-        img1 = arr
+        img1 = im1
 
-    arr = imread("frame0100.jpg").astype(float)
-    if len(arr) == 3:
-        img2 =  average(arr, -1)  # average over the last axis (color channels)
+    # arr = imread("frame0100.jpg").astype(float)
+    if len(im2) == 3:
+        img2 =  average(im2, -1)  # average over the last axis (color channels)
     else:
-        img2 = arr
+        img2 = im2
 
     
     rng = img1.max()-img1.min()
@@ -39,7 +39,7 @@ def main():
     # print("Zero norm:", n_0, "/ per pixel:", n_0*1.0/img1.size)
 
     if n_m/img1.size > 2:
-      return 1
+        return 1
     return 0
 
 with open ("model.pkl","wb") as handle:

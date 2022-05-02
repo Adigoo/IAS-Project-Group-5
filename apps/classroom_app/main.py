@@ -122,8 +122,8 @@ def peripherals():
 
 
 if __name__ == "__main__":
-    t1 = threading.Thread(target = fire_detection)
-    t2 = threading.Thread(target = student_motion_detect)
-    t3 = threading.Thread(target = attention_detection)
+    t1 = threading.Thread(target = fan_control_system)
+    t2 = threading.Thread(target = peripheral_control_system)
+    t3 = threading.Thread(target = attendance_system)
     
     app.run(port=5000)
