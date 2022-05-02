@@ -7,6 +7,6 @@ docker run --rm -it -d -v /etc/localtime:/etc/localtime:ro --net=host  --name se
 docker run --rm -it -d -v /etc/localtime:/etc/localtime:ro --net=host  --name control_manager control_manager
 docker run --rm -it -d -v /etc/localtime:/etc/localtime:ro --net=host  --name node_manager node_manager
 
-python3 ./node/app.py; & 
+python3 ./node/app.py & 
 
-python3 ./controllers/ac_server.py 7001; &
+python3 ./controllers/ac_server.py 7001 &

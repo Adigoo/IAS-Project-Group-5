@@ -93,7 +93,7 @@ do
         cd kafka_2.13-3.1.0; \
         bin/zookeeper-server-start.sh -daemon config/zookeeper.properties; \
         sleep 10s; \
-        JMX_PORT=8004 bin/kafka-server-start.sh -daemon config/server.properties; \
+        bin/kafka-server-start.sh -daemon config/server.properties; \
         sleep 10s;
     "
 
