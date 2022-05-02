@@ -60,6 +60,8 @@ def getNode():
             {"_id": "modelvm"}
         )
 
+        logging.warning(f"model_vm = {model_vm}")
+
         app_vm = vm_ips_coll.find(
             {"_id": "appvm"}
         )
@@ -76,7 +78,10 @@ def getNode():
         # data = [model_vm_ip, app_vm_ip]
         data.append(model_vm_ip)
         data.append(app_vm_ip)
+
+        logging.warning(f"data = {data}")
     except:
+        logging.warning("SOME exception occurred")
         pass
 
     node_list = list()
