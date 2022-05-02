@@ -60,7 +60,7 @@ class ModelClass:
             return 1
         return 0
 
-obj = Model()
+obj = ModelClass()
 
 with open ("peripheral_control_model.pkl","wb") as handle:
     pickle.dump(obj,handle)
