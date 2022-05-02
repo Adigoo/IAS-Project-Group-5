@@ -4,6 +4,8 @@ from flask import Flask, render_template
 import threading
 import api
 from time import sleep
+from datetime import datetime
+now = datetime.now()
 
 app = Flask()
 
@@ -89,29 +91,39 @@ def attention_system():
     return average_attentiveness
             
 
-def peripheral_control_system():
-    while(1):
+# def peripheral_control_system():
+#     while(1):
         
-        # sensor_name = "Camera"
-        # model_name = "model1"
-        predictions = []
-        sensor_data = api.get_sensor_data("peripheral_control_system")
-        for img in sensor_data:
-            predictions.append(api.predict("peripheral_control_system",img))
-        # model_name2 = "model2"
+#         # sensor_name = "Camera"
+#         # model_name = "model1"
+#         predictions = []
+#         sensor_data = api.get_sensor_data("peripheral_control_system")
+#         for img in sensor_data:
+#             predictions.append(api.predict("peripheral_control_system",img))
+#         # model_name2 = "model2"
 
-        # get_attentiveness = api.predict(model_name2,sensor_data)
+#         # get_attentiveness = api.predict(model_name2,sensor_data)
 
-        # api.controllerAction(get_attentiveness,"Light_controller")
+#         # api.controllerAction(get_attentiveness,"Light_controller")
                 
-        sleep(60)
+#         sleep(60)
 
+def change_value():
+
+    global attentive_time
+    global average_attentiveness
+
+    while(1):
+        attentive_time+=1
+        average_attentiveness+=1
+        sleep(2)
+    
 
 @app.route('/')
 def home():
     return render_template("index.html")
 
-@app.route('/attendance', methods = ["GET"])
+@app.route('/startClass', methods = ["GET"])
 def attendance():
     return 1
     pass
@@ -121,11 +133,14 @@ def endclass():
     pass
 
 
-@app.route('/attention')
+@app.route('/monitorPeripheral')
 def attention():
-    pass
+    global attentive_time
+    global average_attentiveness
+    return render_template("attention.html", attentive_time=attentive_time, average_attentiveness=average_attentiveness)
 
-@app.route('/peripherals')
+
+@app.route('/monitorFan')
 def peripherals():
     pass
 
@@ -134,6 +149,8 @@ if __name__ == "__main__":
     t1 = threading.Thread(target = fan_control_system)
     t2 = threading.Thread(target = peripheral_control_system)
     t3 = threading.Thread(target = attendance_system)
+    t4 = threading.Thread(target = change_value)
+    t4.start()
     t1.start()
     t2.start()
     t3.start()
