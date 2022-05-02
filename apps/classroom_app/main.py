@@ -1,3 +1,5 @@
+from concurrent.futures import thread
+from curses import meta
 from flask import Flask, render_template
 import threading
 import api
@@ -5,7 +7,8 @@ from time import sleep
 
 app = Flask()
 
-present_list = []
+present_list = set()
+class_attention = ""
 students_dict = {0 : 'Adriana Lima',1 : 'Alex Lawther',2: 'Alexandra Daddario',
 3 : 'Alvaro Morte',4 : 'Amanda Crew',5 : 'Andy Samberg',
 6 : 'Anne Hathaway',7 : 'Anthony Mackie',8: 'alycia dabnem carey',
@@ -49,7 +52,7 @@ def attendance_system():
         sensor_data = api.get_sensor_data("attendance_system")
         predictions = api.predict("attendance_system",sensor_data)
         for i in predictions:
-            present_list.append(students_dict[i])
+            present_list.add(students_dict[i])
 
         class_attention = attention_system()
         # Send notification
@@ -104,19 +107,25 @@ def peripheral_control_system():
         sleep(60)
 
 
-app.route('/')
+@app.route('/')
 def home():
     return render_template("index.html")
 
-app.route('/attendance')
+@app.route('/attendance', methods = ["GET"])
 def attendance():
+    return 1
     pass
 
-app.route('/attention')
+@app.route('/endclass', methods = ["GET"])
+def endclass():
+    pass
+
+
+@app.route('/attention')
 def attention():
     pass
 
-app.route('/peripherals')
+@app.route('/peripherals')
 def peripherals():
     pass
 
@@ -125,5 +134,7 @@ if __name__ == "__main__":
     t1 = threading.Thread(target = fan_control_system)
     t2 = threading.Thread(target = peripheral_control_system)
     t3 = threading.Thread(target = attendance_system)
-    
-    app.run(port=5000)
+    t1.start()
+    t2.start()
+    t3.start()
+    app.run(debug=True, port="0.0.0.0")
