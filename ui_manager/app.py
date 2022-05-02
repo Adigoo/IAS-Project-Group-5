@@ -423,7 +423,7 @@ def model_upload():
                 
                 os.mkdir("./tmp")
 
-                port_num = random.randInt(40001,50000)
+                port_num = random.randint(40001,50000)
                 model_name = filename.split('.')[0]
                 model_util.generate_server_file(port_num, model_name)
                 model_util.generate_requirements()
