@@ -3,6 +3,9 @@ import json
 import random
 import pymongo
 
+pub_ip = requests.get("http://api.ipify.org").content.decode()
+localhost_ip_address = pub_ip
+# localhost_ip_address = "localhost"
 
 client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
 db_name = "ias_database"
@@ -18,9 +21,9 @@ sensor_service_port = service_ports[0]['sensor_service']
 controller_service_port = service_ports[0]['controller_service']
 model_service_port = service_ports[0]['model_service']
 
-sensor_url = f'http://localhost:{sensor_service_port}/'
-control_url = f'http://localhost:{controller_service_port}/'
-model_url = f'http://localhost:{model_service_port}/'
+sensor_url = f'http://{localhost_ip_address}:{sensor_service_port}/'
+control_url = f'http://{localhost_ip_address}:{controller_service_port}/'
+model_url = f'http://{localhost_ip_address}:{model_service_port}/'
 model_name = "ac_prediction_model"
 
 
@@ -36,10 +39,10 @@ def readFromFile(path, key):
 
 
 def get_public_ip():
-    # resp = requests.get("http://api.ipify.org/").content.decode()
+    resp = requests.get("http://api.ipify.org/").content.decode()
     # return "172.17.0.1"
-    return "localhost"
-
+    # return "localhost"
+    return resp
 
 def getSensorInstances(path="ac_app.json"):
     sensor_type, sensor_location, no_of_instances = readFromFile(
@@ -47,7 +50,7 @@ def getSensorInstances(path="ac_app.json"):
 
     pub_ip = get_public_ip()
     url = f"http://{pub_ip}:{sensor_service_port}/"+'getSensorInstances'
-    # print(url)
+    # logging.warning(url)
     response = requests.post(url=url, json={
         "sensor_type": sensor_type[0],
         "sensor_location": sensor_location
@@ -63,7 +66,7 @@ def getControlInstances(path="ac_app.json"):
     pub_ip = get_public_ip()
 
     url = f"http://{pub_ip}:{controller_service_port}/"+'getControlInstances'
-    # print(url)
+    # logging.warning(url)
     response = requests.post(url=url, json={
         "sensor_type": sensor_type,
         "sensor_location": sensor_location
@@ -79,7 +82,7 @@ def getSensorData():
 
     pub_ip = get_public_ip()
     url = f"http://{pub_ip}:{sensor_service_port}/"+'getSensorData'
-    # print(url)
+    # logging.warning(url)
     response = requests.post(url=url, json={
         "topic_name": sensor_instances[0]
     }).content
@@ -108,9 +111,9 @@ def predict(data):
     # url = model_url+'predict'
     pub_ip = get_public_ip()
     url = f"http://{pub_ip}:{model_service_port}/"+'predict'
-    # print("Data: ", data.tolist())
+    # logging.warning("Data: ", data.tolist())
     # data = data.tolist()
-    # print(type(data))
+    # logging.warning(type(data))
     response = requests.post(url=url, json={
         "data": data.tolist(),
         "model_name": model_name

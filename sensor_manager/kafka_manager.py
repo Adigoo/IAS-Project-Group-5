@@ -1,10 +1,17 @@
+import logging
 from time import sleep
 from kafka import KafkaProducer, KafkaConsumer, TopicPartition
 import sensor_data
 import threading
 import sensor_db
+import requests
 
-bootstrap_servers = ['localhost:9092']
+# localhost_ip_address = "172.17.0.1"
+pub_ip = requests.get("http://api.ipify.org").content.decode()
+localhost_ip_address = pub_ip
+# localhost_ip_address = "localhost"
+
+bootstrap_servers = [f'{localhost_ip_address}:9092']
 
 ################################# KAFKA CREATE/PRODUCE/CONSUME #########################################
 
@@ -47,7 +54,7 @@ def consume_data(topic_name):
 
 
 def produce_sensors_data():
-    print("STARTED PRODUCING DATA...")
+    logging.warning("STARTED PRODUCING DATA...")
     sensor_instances = sensor_db.get_all_sensor_instances()
     for instance in sensor_instances:
         # Creating thread for each sensor instance present in the mongodb

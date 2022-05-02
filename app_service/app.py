@@ -1,3 +1,4 @@
+import logging
 from asyncio import subprocess
 from flask import Flask, request, url_for, render_template, jsonify, session, flash, redirect
 from flask_pymongo import PyMongo
@@ -88,9 +89,9 @@ def upload_application():
             share_client = ShareClient.from_connection_string(connection_string, share_name)
             flag = True
             for item in list(share_client.list_directories_and_files('application_repo')):
-                print(item['name'])
+                logging.warning(item['name'])
                 if item["is_directory"]:
-                    print("Directory:", item["name"])
+                    logging.warning(f"Directory: {item['name']}")
                     if item["name"] == filename.split('.')[0]:
                         flag = False
             if flag:
@@ -106,17 +107,17 @@ def upload_application():
                 zipfile = ZipFile(file._file)
                 if validate_Zip_app_service(zipfile):
                     create_directory(connection_string, share_name, 'application_repo/' + filename.split('.')[0])
-                    print(zipfile.namelist())
+                    logging.warning(zipfile.namelist())
                     fileslist = zipfile.namelist()[1:]
                     for name in fileslist:
-                        print(name)
+                        logging.warning(name)
                         newfile = zipfile.read(name)
-                        print('application_repo/' + name)
+                        logging.warning('application_repo/' + name)
                         upload_local_file(connection_string, newfile, share_name, 'application_repo/' + name)
-                        #print(name.split)
+                        #logging.warning(name.split)
                         if name.split('/')[1] == "application.json": 
                             json_data = json.loads(newfile.decode('utf-8'))
-                            print(json_data)
+                            logging.warning(json_data)
                             json_data['_id'] = json_data['app_name']
                             db.application.insert_one(json_data)
                 else:

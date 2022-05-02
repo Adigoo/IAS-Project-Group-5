@@ -1,3 +1,4 @@
+import logging
 from flask_pymongo import PyMongo
 from flask import Flask, request, jsonify
 import threading
@@ -25,6 +26,12 @@ mongo_db = PyMongo(app)
 db = mongo_db.db
 
 
+#####################################################################
+#####################################################################
+#####################################################################
+#####################################################################
+#####################################################################
+
 def json_deserializer(data):
     return json.dumps(data).decode('utf-8')
 
@@ -45,25 +52,25 @@ def getNode():
 
     try:
         data = list(db.nodes_collection.find({}))
-        print(data)
+        logging.warning(data)
     except:
         pass
 
     node_list = list()
 
     for node in data:
-        print(node['ip'])
-        print(node['port'])
+        logging.warning(node['ip'])
+        logging.warning(node['port'])
         node_ip = node['ip']
         node_port = node['port']
         node_list.append(f"http://{node['ip']}:{node['port']}")
     # 3
-    print(node_list)
+    logging.warning(node_list)
 
     loads = {}
     # data=json.load(f)
     # ni=data["node"]
-    # print(ni)
+    # logging.warning(ni)
     for item in node_list:
         rgl = item+"/getLoad"
         req = requests.get(url=rgl).json()
@@ -72,17 +79,17 @@ def getNode():
         tup = (cm, cl)
         loads[item] = tup
     srt = sorted([(value, key) for (key, value) in loads.items()])
-    # print()
+    # logging.warning()
     rdf = srt[0]
     ke = list(loads.keys())
-    print(ke[0])
-    print("Deploy on "+ke[0], file=sys.stderr)
-    print(cl+"\t"+cm)
+    logging.warning(ke[0])
+    logging.warning("Deploy on {ke[0]} file=sys.stderr")
+    logging.warning(cl+"\t"+cm)
     return ke[0]
 
 
 if __name__ == "__main__":
-    # print(f"resp = {get_node_for_deployment().decode()}")
+    # logging.warning(f"resp = {get_node_for_deployment().decode()}")
 
     # getNode()
 

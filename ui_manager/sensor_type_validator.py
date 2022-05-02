@@ -3,13 +3,13 @@ import uuid
 
 
 # def read_db_configuration(filepath):
-#     print("in read_db_configureation")
-#     print(filepath)
+#     logging.warning("in read_db_configureation")
+#     logging.warning(filepath)
 #     f = open(filepath, "r")
 
 #     # Reading from file
 #     data = json.loads(f.read())
-#     print(data)
+#     logging.warning(data)
 #     host_name = data["host"]
 #     user_name = data["user"]
 #     password = data["password"]
@@ -18,12 +18,12 @@ import uuid
 
 
 # def insert_data_to_table(tablename, table_column_names, row_data):
-#     print(f"in insert data {tablename}")
+#     logging.warning(f"in insert data {tablename}")
 #     filepathdb = "configurations/db_config.json"
 #     host_name, user_name, password, database_name = read_db_configuration(
 #         filepathdb)
 
-#     print(host_name, user_name, password, database_name)
+#     logging.warning(host_name, user_name, password, database_name)
 #     mydb = mysql.connector.connect(
 #         host=host_name,
 #         user=user_name,
@@ -31,7 +31,7 @@ import uuid
 #         database=database_name
 #     )
 
-#     print("connection successful")
+#     logging.warning("connection successful")
 #     mycursor = mydb.cursor()
 
 #     table_column_str = ", ".join(i for i in table_column_names)
@@ -45,11 +45,11 @@ import uuid
 
 def sensor_type_validator(filepath):
     with open(filepath, "r") as read_content:
-        print("FILE CONTENT in validator")
-        # print(json.load(read_content))
+        logging.warning("FILE CONTENT in validator")
+        # logging.warning(json.load(read_content))
 
         file_content = json.load(read_content)
-        print(file_content)
+        logging.warning(file_content)
 
         uuidstr = str(uuid.uuid4())
 

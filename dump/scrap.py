@@ -18,7 +18,7 @@ import requests
 
 data = 1
 data = np.reshape(np.array(data),(-1, 1))
-# print(data)
+# logging.warning(data)
 # jsonObj= {
 #     "data": data
 # }
@@ -26,4 +26,4 @@ response = requests.post("http://localhost:5003/predict", json={
     "data": data.tolist(),
     "model_name": "ac_prediction_model"
 }).content
-# print(jsonObj)
+# logging.warning(jsonObj)

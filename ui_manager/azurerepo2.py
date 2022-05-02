@@ -1,3 +1,4 @@
+import logging
 from azure.core.exceptions import (
     ResourceExistsError,
     ResourceNotFoundError
@@ -16,11 +17,11 @@ def create_file_share(connection_string, share_name):
         share_client = ShareClient.from_connection_string(
             connection_string, share_name)
 
-        print("Creating share:", share_name)
+        logging.warning("Creating share:", share_name)
         share_client.create_share()
 
     except ResourceExistsError as ex:
-        print("ResourceExistsError:", ex.message)
+        logging.warning(f"ResourceExistsError: {ex.message}")
 
     
 def create_directory(connection_string, share_name, dir_name):
@@ -29,11 +30,11 @@ def create_directory(connection_string, share_name, dir_name):
         dir_client = ShareDirectoryClient.from_connection_string(
             connection_string, share_name, dir_name)
 
-        print("Creating directory:", share_name + "/" + dir_name)
+        logging.warning(f"Creating directory: {share_name}/{dir_name}")
         dir_client.create_directory()
 
     except ResourceExistsError as ex:
-        print("ResourceExistsError:", ex.message)
+        logging.warning(f"ResourceExistsError: {ex.message}")
 
 
 def delete_dir_tree(c_str, s_name, d_name, space = ""):
@@ -45,7 +46,7 @@ def delete_dir_tree(c_str, s_name, d_name, space = ""):
         my_list.append(item)
 
     for ele in my_list:
-        print(space, ele)
+        logging.warning(f"{space}, {ele}")
 
         if ele['is_directory']:
             delete_dir_tree(c_str, s_name, d_name+"/"+ele['name'], space = space+"   ")
@@ -70,14 +71,16 @@ def upload_local_file(connection_string, data, share_name, dest_file_path):
 
         # with open(local_file_path, "rb") as source_file:
         #     file_client.upload_file(source_file)
-        print("Uploading to:", share_name + "/" + dest_file_path)
+        # logging.warning("Uploading to:", share_name + "/" + dest_file_path)
+        logging.warning(f"Uploading to: {share_name}/{dest_file_path}")
         file_client.upload_file(data)
 
     except ResourceExistsError as ex:
-        print("ResourceExistsError:", ex.message)
+        logging.warning(f"ResourceExistsError: {ex.message}")
 
     except ResourceNotFoundError as ex:
-        print("ResourceNotFoundError:", ex.message)
+        logging.warning(f"ResourceNotFoundError: {ex.message}")
+        
 
 if __name__ == "__main__":
     share_name = "ias-storage"

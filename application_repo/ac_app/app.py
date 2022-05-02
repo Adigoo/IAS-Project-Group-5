@@ -13,5 +13,5 @@ while(1):
     data = np.reshape(np.array(data), (-1, 1))
     prediction = api.predict(data)
     output = api.controllerAction(prediction[0])
-    print("Temperature is:", temperature, "and action taken:", output)
+    logging.warning("Temperature is:", temperature, "and action taken:", output)
     sleep(60)

@@ -1,4 +1,3 @@
-from urllib import response
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import sensor_manager
@@ -6,6 +5,7 @@ import sensor_db
 import kafka_manager
 import json
 import pymongo
+import logging
 
 client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
 db_name = "ias_database"
@@ -21,35 +21,18 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 ################################## SENSOR REGISTRATION ########################################
 
-@app.route("/registerSensorType", methods=["POST"])
-def registerSensorType():
-    data = request.json
-    new_type = data['sensor_type']
-    # Check if the sensor type already exists
-    sensor_types = sensor_manager.getAllSensorTypes()
-    res = ""
-    if new_type in sensor_types:
-        res = "Sensor type already exists !!"
-    else:
-        sensor_manager.registerSensorType(data)
-        res = "Sensor type registered successfully !!"
-
-    return json.dumps({"data": res})
+# @app.route("/registerSensorType", methods=["POST"])
+# def registerSensorType():
+#     sensor_type = request.json
+#     sensor_manager.registerSensorType(sensor_type)
+#     return json.dumps({"data": "Registered Sensor Type successfully"})
 
 
 @app.route("/registerSensorInstance", methods=["POST"])
 def registerSensorInstance():
     sensor_instance = request.json
-    # Checking if the sensor type exists or not
-    new_type = sensor_instance['sensor_type']
-    sensor_types = sensor_manager.getAllSensorTypes()
-    if new_type not in sensor_types:
-        res = "Sensor type doesnot exists !!"
-    else:
-        sensor_manager.registerSensorInstance(sensor_instance)
-        res = "Sensor instance registered successfully !!"
-
-    return json.dumps({"data": res})
+    sensor_manager.registerSensorInstance(sensor_instance)
+    return json.dumps({"data": "Registered Sensor Instance successfully"})
 
 ################################# GET A SENSOR DATA ###########################################
 
@@ -109,15 +92,19 @@ def getAllSensorInstances():
 
 if __name__ == "__main__":
     if sensor_db.databaseExists() == False:
-        print("Sensor Collection CREATED...")
+        logging.warning("Sensor Collection CREATED...")
         sensor_manager.register_sensors_from_json("sensor_config.json")
     else:
-        print("DATABASE ALREADY EXISTS...")
+        logging.warning("DATABASE ALREADY EXISTS...")
         kafka_manager.produce_sensors_data()
     
+
+
     service_ports = services_config_coll.find()
 
     sensor_service_port = service_ports[0]['sensor_service']
+
+
 
     app.run(debug=True, host='0.0.0.0', port=sensor_service_port)
 

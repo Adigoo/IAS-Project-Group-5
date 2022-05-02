@@ -1,8 +1,8 @@
 
-FROM python:3.8
-ENV PYTHONUNBUFFERED 1
-WORKDIR /app
-COPY requirements.txt /app/requirements.txt
-RUN pip install -r requirements.txt --upgrade
-COPY . /app
-CMD [ "python3", "app.py" ]
+FROM python:3
+# ENV PYTHONUNBUFFERED 1
+WORKDIR /app_service
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+COPY . .
+CMD [ "python3", "-u", "app.py" ]

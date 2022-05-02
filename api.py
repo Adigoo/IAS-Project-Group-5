@@ -1,10 +1,9 @@
 import requests
 import json
 import random
+import logging
 
-# sensor_url = 'http://localhost:5000/'
-# control_url = 'http://localhost:6000/'
-# model_url = 'http://localhost:5003/'
+
 model_name = "ac_prediction_model"
 
 
@@ -20,9 +19,10 @@ def readFromFile(path, key):
 
 
 def get_public_ip():
-    # resp = requests.get("http://api.ipify.org/").content.decode()
+    resp = requests.get("http://api.ipify.org/").content.decode()
     # return "172.17.0.1"
-    return "OPEN API"
+    # return "OPEN API"
+    return resp
 
 
 def getSensorInstances(path="ac_app.json"):
@@ -31,7 +31,7 @@ def getSensorInstances(path="ac_app.json"):
 
     pub_ip = get_public_ip()
     url = f"http://{pub_ip}:5000/"+'getSensorInstances'
-    # print(url)
+    # logging.warning(url)
     response = requests.post(url=url, json={
         "sensor_type": sensor_type[0],
         "sensor_location": sensor_location
@@ -47,7 +47,7 @@ def getControlInstances(path="ac_app.json"):
     pub_ip = get_public_ip()
 
     url = f"http://{pub_ip}:6000/"+'getControlInstances'
-    # print(url)
+    # logging.warning(url)
     response = requests.post(url=url, json={
         "sensor_type": sensor_type,
         "sensor_location": sensor_location
@@ -63,7 +63,7 @@ def getSensorData():
 
     pub_ip = get_public_ip()
     url = f"http://{pub_ip}:5000/"+'getSensorData'
-    # print(url)
+    # logging.warning(url)
     response = requests.post(url=url, json={
         "topic_name": sensor_instances[0]
     }).content
@@ -92,9 +92,9 @@ def predict(data):
     # url = model_url+'predict'
     pub_ip = get_public_ip()
     url = f"http://{pub_ip}:5003/"+'predict'
-    # print("Data: ", data.tolist())
+    # logging.warning("Data: ", data.tolist())
     # data = data.tolist()
-    # print(type(data))
+    # logging.warning(type(data))
     response = requests.post(url=url, json={
         "data": data.tolist(),
         "model_name": model_name

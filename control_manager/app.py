@@ -48,7 +48,7 @@ def getControlInstances():
 
 if __name__ == "__main__":
     if control_db.databaseExists() == False:
-        print("Collection CREATED...")
+        logging.warning("Collection CREATED...")
         control_manager.register_controllers_from_json("control_config.json")
     
     
