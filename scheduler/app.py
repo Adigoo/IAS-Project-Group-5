@@ -226,10 +226,10 @@ def upload_file():
             app_config = list(db.application.find({"_id": json_data['application-name']}))[0]
             flag = True
             if json_data['application-name'] == app_config['_id']:
-                for i in range(len(app_config['sensor'])):
-                    if app_config['sensor'][i]['sensor_type'] != json_data['sensor_details']['sensor_type'][i]:
-                        flag = False
-                        break
+                # for i in range(len(app_config['sensor'])):
+                #     if app_config['sensor'][i]['sensor_type'] != json_data['sensor_details']['sensor_type'][i]:
+                #         flag = False
+                #         break
                 logging.warning(flag)
                 if flag:
                     logging.warning("Sensors matched now uploading")
