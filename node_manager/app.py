@@ -61,6 +61,7 @@ def getNode():
         )
 
         logging.warning(f"model_vm = {model_vm}")
+        logging.warning(f"model_vm['vm_ip'] = {model_vm['vm_ip']}")
 
         app_vm = vm_ips_coll.find(
             {"_id": "appvm"}
@@ -68,10 +69,12 @@ def getNode():
 
         # print(actual_config)
         model_vm_ip = model_vm["vm_ip"]
+        logging.warning(f"model_vm['vm_ip'] = {model_vm['vm_ip']}")
         model_vm_ip = model_vm_ip.replace('"', '')
         model_vm_ip = model_vm_ip.replace("'", '')
         # to remove redundant double quotes
         app_vm_ip = app_vm["vm_ip"]
+        logging.warning(f"app_vm['vm_ip'] = {app_vm['vm_ip']}")
         app_vm_ip = app_vm_ip.replace('"', '')
         app_vm_ip = app_vm_ip.replace("'", '')
 
