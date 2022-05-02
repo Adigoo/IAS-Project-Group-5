@@ -196,9 +196,9 @@ def generate_api(data):
     service_ports = services_config_coll.find()
     urls = "pub_ip = get_public_ip()\n"
 
-    urls += 'sensor_url = f"http://{pub_ip}:'+ service_ports[0]["sensor_service"]+'/"\n'
-    urls += 'model_url = f"http://{pub_ip}:'+ service_ports[0]["model_service"]+'/"\n'
-    urls += 'controller_url = f"http://{pub_ip}:'+ service_ports[0]["controller_service"]+'/"\n'
+    urls += 'sensor_url = f"http://{pub_ip}:'+ str(service_ports[0]["sensor_service"])+'/"\n'
+    urls += 'model_url = f"http://{pub_ip}:'+ str(service_ports[0]["model_service"])+'/"\n'
+    urls += 'controller_url = f"http://{pub_ip}:'+ str(service_ports[0]["controller_service"])+'/"\n'
     output_file.write(urls)
 
     definition = "def get_details(name):\n"
