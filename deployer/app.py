@@ -170,7 +170,7 @@ def killImg():
 
         configuration_document = db.deployer_log.find_one(
             {"config_id": received_json["config_id"]})
-        container_id_to_kill = configuration_document["container_id"]
+        container_name_to_kill = configuration_document["container_name"]
         url_of_node = configuration_document["url"]
 
         # url = received_json['url']
@@ -182,7 +182,7 @@ def killImg():
         # logging.warning(f"data = {received_json}")
         db.deployer_log.delete_one({'app_name': received_json['app_name']})
         res = requests.post(url=url_of_node + "/killapp",
-                            json={'container_id': container_id_to_kill})
+                            json={'container_id': container_name_to_kill})
         logging.warning(res.content)
 
     return "Killed"

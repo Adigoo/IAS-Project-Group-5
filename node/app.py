@@ -282,8 +282,8 @@ def generate_requirements(app_name):
 @app.route('/killapp', methods=['POST'])
 def killApp():
     tmp = request.get_json()
-    container_id = tmp['container_id']
-    command="docker rm -f " + container_id
+    container_name = tmp['container_name']
+    command="docker rm -f " + container_name
     os.system(command)
     # status = os.kill(pid, signal.SIGKILL)
     # out = out.decode('utf-8')
