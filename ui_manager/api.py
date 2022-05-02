@@ -1,10 +1,32 @@
 import requests
 import json
 import random
+import pymongo
 
-sensor_url = 'http://localhost:5000/'
-control_url = 'http://localhost:6000/'
-model_url = 'http://localhost:5003/'
+
+client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
+db_name = "ias_database"
+client = pymongo.MongoClient(client)
+mydb = client[db_name]
+nodes_collection = mydb["nodes_collection"]
+services_config_coll = mydb["services_config"]
+
+service_ports = services_config_coll.find()
+node_service_port = service_ports[0]['node_service']
+
+sensor_service_port = service_ports[0]['sensor_service']
+controller_service_port = service_ports[0]['controller_service']
+model_service_port = service_ports[0]['model_service']
+
+# localhost_ip_address = "172.17.0.1"
+pub_ip = requests.get("http://api.ipify.org").content.decode()
+localhost_ip_address = pub_ip
+# localhost_ip_address = "localhost"
+
+
+sensor_url = f'http://{localhost_ip_address}:{sensor_service_port}/'
+control_url = f'http://{localhost_ip_address}:{controller_service_port}/'
+model_url = f'http://{localhost_ip_address}:{model_service_port}/'
 model_name = "ac_prediction_model"
 
 
@@ -20,8 +42,10 @@ def readFromFile(path, key):
 
 
 def get_public_ip():
-    # resp = requests.get("http://api.ipify.org/").content.decode()
-    return "172.17.0.1"
+    resp = requests.get("http://api.ipify.org/").content.decode()
+    # return "172.17.0.1"
+    # return "localhost"
+    return resp
 
 
 def getSensorInstances(path="ac_app.json"):
@@ -29,8 +53,8 @@ def getSensorInstances(path="ac_app.json"):
         path, "sensor_details")
 
     pub_ip = get_public_ip()
-    url = f"http://{pub_ip}:5000/"+'getSensorInstances'
-    # print(url)
+    url = f"http://{pub_ip}:{sensor_service_port}/"+'getSensorInstances'
+    # logging.warning(url)
     response = requests.post(url=url, json={
         "sensor_type": sensor_type[0],
         "sensor_location": sensor_location
@@ -45,8 +69,8 @@ def getControlInstances(path="ac_app.json"):
 
     pub_ip = get_public_ip()
 
-    url = f"http://{pub_ip}:6000/"+'getControlInstances'
-    # print(url)
+    url = f"http://{pub_ip}:{controller_service_port}/"+'getControlInstances'
+    # logging.warning(url)
     response = requests.post(url=url, json={
         "sensor_type": sensor_type,
         "sensor_location": sensor_location
@@ -61,8 +85,8 @@ def getSensorData():
     sensor_instances = random.sample(all_instances, no_of_instances)
 
     pub_ip = get_public_ip()
-    url = f"http://{pub_ip}:5000/"+'getSensorData'
-    # print(url)
+    url = f"http://{pub_ip}:{sensor_service_port}/"+'getSensorData'
+    # logging.warning(url)
     response = requests.post(url=url, json={
         "topic_name": sensor_instances[0]
     }).content
@@ -76,7 +100,7 @@ def controllerAction(data):
     instance = all_instances[0]
     # url = control_url+'performAction'
     pub_ip = get_public_ip()
-    url = f"http://{pub_ip}:6000/"+'performAction'
+    url = f"http://{pub_ip}:{controller_service_port}/"+'performAction'
     response = requests.post(url=url, json={
         "sensor_type": instance["sensor_type"],
         "sensor_ip": instance["sensor_ip"],
@@ -90,10 +114,10 @@ def predict(data):
     # MAKE API call to the model
     # url = model_url+'predict'
     pub_ip = get_public_ip()
-    url = f"http://{pub_ip}:5003/"+'predict'
-    # print("Data: ", data.tolist())
+    url = f"http://{pub_ip}:{model_service_port}/"+'predict'
+    # logging.warning("Data: ", data.tolist())
     # data = data.tolist()
-    # print(type(data))
+    # logging.warning(type(data))
     response = requests.post(url=url, json={
         "data": data.tolist(),
         "model_name": model_name

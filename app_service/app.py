@@ -1,122 +1,139 @@
+import logging
+from asyncio import subprocess
 from flask import Flask, request, url_for, render_template, jsonify, session, flash, redirect
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin
+from flask_pymongo import PyMongo
+from io import BytesIO
 from werkzeug.utils import secure_filename
 from zipfile import ZipFile
 import requests
 import json
 import os
 
+from azurerepo2 import create_directory, upload_local_file
+
+from azure.core.exceptions import (
+    ResourceExistsError,
+    ResourceNotFoundError
+)
+
+from azure.storage.fileshare import (
+    ShareServiceClient,
+    ShareClient,
+    ShareDirectoryClient,
+    ShareFileClient
+)
+import pymongo, shutil
+
+client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
+db_name = "ias_database"
+client = pymongo.MongoClient(client)
+mydb = client[db_name]
+services_config_coll = mydb["services_config"]
+
+
+share_name = "ias-storage"
+connection_string = "DefaultEndpointsProtocol=https;AccountName=iasproject;AccountKey=QmnE09E9Cl6ywPk8J31StPn5rKPy+GnRNtx3M5VC5YZCxAcv8SeoUHD2o1w6nI1cDXgpPxwx1D9Q18bGcgiosQ==;EndpointSuffix=core.windows.net"
+
+# Create a ShareServiceClient from a connection string
+service_client = ShareServiceClient.from_connection_string(connection_string)
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:0548@localhost/app'
+app.config['MONGO_URI'] = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
 app.config['SECRET_KEY'] = "SuperSecretKey"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+
+mongo_db = PyMongo(app)
+db = mongo_db.db
 
 ALLOWED_EXTENSIONS = set(['zip'])
-
-
-class application_DB(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    appName = db.Column(db.String(500), nullable=False, unique=True)
-    modelType = db.Column(db.String(500), nullable=False)
-    sensorType = db.Column(db.String(5000), nullable=False)
-    controllerSensorType = db.Column(db.String(5000), nullable=False)
-
-    def __init__(self, appName, modelType, sensorType, controllerSensorType):
-        self.appName = appName
-        self.modelType = modelType
-        self.sensorType = sensorType
-        self.controllerSensorType = controllerSensorType
-
 
 @app.route('/')
 def print_val():
     return "hello"
 
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
-def validate_Zip(file_path):
+def validate_Zip_app_service(zipObj):
     countjson = 0
     countpy = 0
-    with ZipFile(file_path, 'r') as zipObj:
-        listOfiles = zipObj.namelist()
-        for elem in listOfiles:
-            if elem.endswith('.json'):
-                countjson += 1
-            if elem.endswith('.py'):
-                countpy += 1
-    if (countjson != 2 or countpy != 1):
+    listOfiles = zipObj.namelist()
+    for elem in listOfiles:
+        if elem.endswith('.json'):
+            countjson += 1
+        if elem.endswith('.py'):
+            countpy += 1
+    if (countjson != 1 or countpy != 1):
         return 0
     return 1
-
-
-def update_DB(file_path):
-    file_name = ""
-    with ZipFile(file_path, 'r') as zipObj:
-        listOfiles = zipObj.namelist()
-        for elem in listOfiles:
-            if elem.endswith('application.json'):
-                file_name = elem
-    zip_obj = ZipFile(file_path, 'r')
-    if file_name != "":
-        json_obj = zip_obj.open(file_name)
-        json_data = json.load(json_obj)
-        app_name = json_data['app_name']
-        model_type = json_data['model_type']
-        sensor_data = ""
-        controller_data = ""
-        for j_data in json_data['sensor']:
-            sensor_data += j_data['sensor_type']+" "
-        for j_data in json_data['controller']:
-            controller_data += j_data['sensor_type']+" "
-        try:
-            obj = application_DB(appName=app_name, modelType=model_type,
-                                 sensorType=sensor_data, controllerSensorType=controller_data)
-            db.session.add(obj)
-            db.session.commit()
-        except:
-            os.remove(file_path)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_application():
     if request.method == 'POST':
-        UPLOAD_FOLDER = os.path.dirname(os.path.realpath(__file__))
-        UPLOAD_FOLDER = UPLOAD_FOLDER + "/Application_repository"
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
+        
+
+
         file = request.files['file']
+
+
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
+        
+
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            if(not os.path.exists(UPLOAD_FOLDER)):
-                os.makedirs(UPLOAD_FOLDER)
-            try:
-                path = os.path.join(UPLOAD_FOLDER, filename)
-                print(path.split('.'))
-                file.save(path)
-                zip_ref = ZipFile(path, 'r')
-                zip_ref.extractall(UPLOAD_FOLDER)
-                zip_ref.close()
-                # os.remove(path)
-            except:
-                return redirect(request.url)
-            if(validate_Zip(os.path.join(UPLOAD_FOLDER, filename)) == 0):
-                os.remove(os.path.join(UPLOAD_FOLDER, filename))
-                return redirect(request.url)
-            update_DB(os.path.join(UPLOAD_FOLDER, filename))
-            return redirect(url_for('upload_application', filename=filename))
+            share_client = ShareClient.from_connection_string(connection_string, share_name)
+            flag = True
+            for item in list(share_client.list_directories_and_files('application_repo')):
+                logging.warning(item['name'])
+                if item["is_directory"]:
+                    logging.warning(f"Directory: {item['name']}")
+                    if item["name"] == filename.split('.')[0]:
+                        flag = False
+            if flag:
+
+                name = "./temp/" + file.filename
+                file.save(name)
+                with ZipFile(name, 'a') as zipf:
+                    source_path = "./api.py"
+                    dest = "api.py"
+
+                    zipf.write(source_path, dest)
+                
+                zipfile = ZipFile(file._file)
+                if validate_Zip_app_service(zipfile):
+                    create_directory(connection_string, share_name, 'application_repo/' + filename.split('.')[0])
+                    logging.warning(zipfile.namelist())
+                    fileslist = zipfile.namelist()[1:]
+                    for name in fileslist:
+                        logging.warning(name)
+                        newfile = zipfile.read(name)
+                        logging.warning('application_repo/' + name)
+                        upload_local_file(connection_string, newfile, share_name, 'application_repo/' + name)
+                        #logging.warning(name.split)
+                        if name.split('/')[1] == "application.json": 
+                            json_data = json.loads(newfile.decode('utf-8'))
+                            logging.warning(json_data)
+                            json_data['_id'] = json_data['app_name']
+                            db.application.insert_one(json_data)
+                else:
+                    return "Improper Zip format"
+            else:
+                return "Application with similar name already exists."
+            return redirect(url_for('upload_application'))
 
     return render_template('index.html')
 
 
 if __name__ == '__main__':
-    db.create_all()
-    app.run(debug=True, port=8082)
+
+
+    service_ports = services_config_coll.find()
+
+    app_service_port = service_ports[0]['app_service']
+
+    app.run(debug=True, host='0.0.0.0', port=app_service_port)

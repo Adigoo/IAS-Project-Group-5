@@ -12,5 +12,5 @@ while(1):
     data = np.reshape(np.array(data), (-1, 1))
     prediction = api.predict(data)
     output = api.controllerAction(prediction[0])
-    print(output)
+    logging.warning(output)
     sleep(60)

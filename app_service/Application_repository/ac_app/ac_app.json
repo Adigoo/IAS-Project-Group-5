@@ -14,6 +14,7 @@
             "no_of_instances": 2
         }
     },
+
     "sensor_details":[
         {
             "sensor_type": "camera",
@@ -71,4 +72,5 @@
             "model_port": "5005"
         }
     ]
+
 }
