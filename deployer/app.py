@@ -47,7 +47,10 @@ def runImg():
 
     logging.warning("got request from scheduler")
     recieved_json = request.get_json()
-    logging.warning(recieved_json)
+    model_port=recieved_json['port_num']
+    
+
+    logging.warning(f"recieved_json = {recieved_json}")
 
 
     service_ports = services_config_coll.find()
@@ -63,7 +66,7 @@ def runImg():
     #url = req['url']
     logging.warning(f"got back from node manager, response =  {node_endpoint}")
     recieved_json['url'] = node_endpoint
-    logging.warning(recieved_json)
+    logging.warning(f'splitted = {node_endpoint.split(":")[1].replace("/", "")}')
     
 
     #######################
