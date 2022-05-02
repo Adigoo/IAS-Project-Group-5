@@ -7,17 +7,13 @@ app = Flask()
 
 def fire_detection():
     while( True ):
-        model_name = "Smoke_Temp_detect_model"
+        model_name = "Temp_detect_model"
 
-        sensor_name = "smoke_detect"
-        smoke_sensor_data = api.get_sensor_data( sensor_name )
-        
         sensor_name = "temp_detect"
         temp_sensor_data = api.get_sensor_data( sensor_name )
         
         data = {
             "data" : {
-                "smoke" : smoke_sensor_data['data'],
                 "temp" : temp_sensor_data['data']
             }
         }

@@ -12,6 +12,9 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 import pickle
+import warnings
+import numpy as np
+warnings.filterwarnings("ignore")
 
 def generate_data():
 
@@ -20,15 +23,6 @@ def generate_data():
   for i in range( 10000 ):
     temp = random.uniform(10, 50)
     temp_data.append( temp )
-
-  # generate smoke data
-  smoke_data = []
-  for i in range( 10000 ):
-    smoke = random.randint(0,1)
-    if smoke == 0:
-      smoke_data.append( False )
-    else:
-      smoke_data.append( True )
 
   # generate fire_alarm data
   fire_alarm_data = []
@@ -39,21 +33,21 @@ def generate_data():
     else:
       fire_alarm_data.append( True )
 
-  return temp_data, smoke_data, fire_alarm_data
+  return temp_data, fire_alarm_data
 
-temp_data, smoke_data, fire_alarm_data = generate_data()
+temp_data, fire_alarm_data = generate_data()
 
-def create_Df( temp_data, smoke_data, fire_alarm_data ):
-  input_data = pd.DataFrame(list(zip(temp_data, smoke_data, fire_alarm_data)), columns=['Temperature','Smoke', 'Fire_Alarm'])
+def create_Df( temp_data, fire_alarm_data ):
+  input_data = pd.DataFrame(list(zip(temp_data, fire_alarm_data)), columns=['Temperature', 'Fire_Alarm'])
   return input_data
 
-input_data = create_Df( temp_data, smoke_data, fire_alarm_data )
+input_data = create_Df( temp_data, fire_alarm_data )
 
 input_data.head()
 
 def split_data( input_data ):
   #X = input_data.drop(columns="Fire_Alarm")
-  X = input_data[["Temperature", "Smoke"]]
+  X = input_data["Temperature"]
   
   y = input_data["Fire_Alarm"]
   
@@ -64,15 +58,17 @@ X_train, X_test, y_train, y_test = split_data( input_data )
 print( X_train )
 print( y_train )
 
-def Decison_Tree():
+def Decison_Tree( X_train ):
+  X_train = np.array( X_train )
+  X_train = X_train.reshape(-1, 1)
   decision_tree_model = DecisionTreeClassifier(max_depth =3, random_state = 42)
   decision_tree_model.fit(X_train, y_train)
   return decision_tree_model
 
-decision_tree_model = Decison_Tree()
+decision_tree_model = Decison_Tree(X_train)
 
 pickle_file = open('model.pkl', 'ab')
 pickle.dump( decision_tree_model, pickle_file )
 pickle_file.close()
 
-# decision_tree_model.predict([[47.857214, True]])
+#decision_tree_model.predict([[47.857214]])
