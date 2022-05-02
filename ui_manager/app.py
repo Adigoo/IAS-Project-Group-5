@@ -423,7 +423,7 @@ def model_upload():
                 
                 os.mkdir("./tmp")
 
-                port_num = 40000
+                port_num = random.randInt(40001,50000)
                 model_name = filename.split('.')[0]
                 model_util.generate_server_file(port_num, model_name)
                 model_util.generate_requirements()
@@ -490,8 +490,8 @@ def model_upload():
                     json_to_send['user_details'] = get_user_details()
                     json_to_send['port_num'] = port_num
 
-                    # pub_ip = requests.get("http://api.ipify.org/").content.decode()
-                    pub_ip = "localhost"
+                    pub_ip = requests.get("http://api.ipify.org/").content.decode()
+                    # pub_ip = "localhost"
                     
                     service_ports = services_config_coll.find()
                     scheduler_service_port = service_ports[0]['scheduler_service']

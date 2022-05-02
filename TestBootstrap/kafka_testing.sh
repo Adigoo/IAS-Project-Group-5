@@ -89,12 +89,12 @@ do
         rm -rf IAS-Project-Group-5;\
         git clone https://github.com/Adigoo/IAS-Project-Group-5.git;\
         cp IAS-Project-Group-5/TestBootstrap/update_advertized_listener_kafka.py .;\
-        python3 ./update_advertized_listener_kafka.py $IP_ADDR; \
+        python3 ./update_advertized_listener_kafka.py $IP_NEW; \
         cd kafka_2.13-3.1.0; \
         bin/zookeeper-server-start.sh -daemon config/zookeeper.properties; \
         sleep 10s; \
         bin/kafka-server-start.sh -daemon config/server.properties; \
-        sleep 10s;
+        # sleep 10s;
     "
 
   fi

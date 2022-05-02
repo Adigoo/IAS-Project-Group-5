@@ -75,7 +75,7 @@ def runImg():
         logger.warning(f"GOT MODEL shceduling reeust {recieved_json['schedule_type'] == 1}")
         recieved_json['fpath'] = 'model_repo/' + recieved_json['model_name']
         logging.warning("hello, {recieved_json}")
-
+        
         logging.warning(f"node_endpoint = {node_endpoint}")
 
         ##

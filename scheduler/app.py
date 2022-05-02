@@ -250,7 +250,7 @@ def upload_file():
                     logging.warning(json_data)
                     add_schedule(json_data)
 
-        
+    
 
     return render_template('index.html')
 

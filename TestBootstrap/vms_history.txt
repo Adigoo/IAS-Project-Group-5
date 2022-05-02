@@ -7,3 +7,7 @@
 '20.198.109.58' 'appvm' 'ias_user'
 '20.198.3.110' 'modelvm' 'ias_user'
 '20.198.1.188' 'kafkavm' 'ias_user'
+'20.219.59.157' 'servicevm' 'ias_user'
+'20.219.23.202' 'appvm' 'ias_user'
+'20.204.64.34' 'modelvm' 'ias_user'
+'20.204.66.61' 'kafkavm' 'ias_user'

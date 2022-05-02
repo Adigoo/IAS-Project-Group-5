@@ -50,20 +50,44 @@ def getNode():
 
     node_service_port = service_ports[0]['node_service']
 
+
     try:
-        data = list(db.nodes_collection.find({}))
-        logging.warning(data)
+        # data = list(db.nodes_collection.find({}))
+        # logging.warning(data)
+
+        ######
+        vm_ips_coll = mydb["vm_ips"]
+        model_vm = vm_ips_coll.find(
+            {"_id": "modelvm"}
+        )
+
+        app_vm = vm_ips_coll.find(
+            {"_id": "appvm"}
+        )
+
+        # print(actual_config)
+        model_vm_ip = model_vm["vm_ip"]
+        model_vm_ip = model_vm_ip.replace('"', '')
+        model_vm_ip = model_vm_ip.replace("'", '')
+        # to remove redundant double quotes
+        app_vm_ip = app_vm["vm_ip"]
+        app_vm_ip = app_vm_ip.replace('"', '')
+        app_vm_ip = app_vm_ip.replace("'", '')
+
+        data = [model_vm_ip, app_vm_ip]
     except:
         pass
 
     node_list = list()
 
-    for node in data:
-        logging.warning(node['ip'])
-        logging.warning(node['port'])
-        node_ip = node['ip']
-        node_port = node['port']
-        node_list.append(f"http://{node['ip']}:{node['port']}")
+    for node_ip in data:
+        # logging.warning(node['ip'])
+        # logging.warning(node['port'])
+        logging.warning(node_ip)
+
+        # node_ip = node['ip']
+        node_port = "5000"
+        node_list.append(f"http://{node_ip}:{node_port}")
     # 3
     logging.warning(node_list)
 
@@ -80,6 +104,9 @@ def getNode():
         loads[item] = tup
     srt = sorted([(value, key) for (key, value) in loads.items()])
     # logging.warning()
+
+
+
     rdf = srt[0]
     ke = list(loads.keys())
     logging.warning(ke[0])

@@ -140,7 +140,7 @@ def runApp():
     received_json = request.get_json()
 
     if received_json['schedule_type'] == 1:
-        # for MODEL scheduling
+        # for MODEL deploying
         logging.warning(
             f"Model Schedule request with received_json = {received_json}")
 
@@ -165,22 +165,27 @@ def runApp():
         di = 'model_repo/'+model_name
         os.chdir(di)
         logging.warning(os.getcwd())
-        command = f"docker build -t {model_name} ."
-        # os.system()
-        out = subprocess.check_output(command, shell=True)
-        out = out.decode('utf-8')
-        out = out.strip()
+        command = f"docker rmi image_{model_name} ."
+        os.system(command=command)
+        logging.warning("Image delted")
 
-        logging.warning(f"output of build ommand = {out}")
 
-        command = f"docker run -d --rm -it -v /etc/localtime:/etc/localtime:ro --net=host  --name {model_name} {model_name}"
+        command = f"docker build -t image_{model_name} ."
+        os.system(command=command)
+        logging.warning(f"Image created image_{model_name}")
 
-        out = subprocess.check_output(command, shell=True)
-        out = out.decode('utf-8')
-        out = out.strip()
-        logging.warning(f"output of run ommand = {out}")
+        # logging.warning(f"output of build ommand = {out}")
 
-        return jsonify(container_id=out)
+        command = f"docker run -d --rm -it -v /etc/localtime:/etc/localtime:ro --net=host  --name container_{model_name} image_{model_name}"
+
+        # out = subprocess.check_output(command, shell=True)
+        # out = out.decode('utf-8')
+        # out = out.strip()
+        os.system(command=command)
+        logging.warning("Model container started")
+        # logging.warning(f"output of run ommand = {out}")
+
+        return jsonify(container_id=f"container_{model_name}")
     else:
         # for APP scheduling
         fpath = received_json['fpath']
@@ -241,15 +246,7 @@ def runApp():
         # localhost_ip_address = "localhost"
 
         return jsonify(container_id=out, port=port_num, ip=localhost_ip_address)
-        ################
-
-        # os.chmod("app.py", 0o0777)
-        # logging.warning("\n\n\CHMOD DONE\n\n\n")
-        # pat = "./app.py"
-        # logging.warning(f"os.path.realpath(pat) = {os.path.realpath(pat)}")
-        # logging.warning(f"os.getcwd() = {os.getcwd()}")
-        # process = subprocess.Popen(["python", pat], shell=False)
-        # return jsonify(pID=process.pid)
+        
 
 
 def generate_docker_file_for_app(app_name):
