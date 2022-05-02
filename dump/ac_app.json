@@ -1,19 +1,88 @@
 {
     "application-name": "ac_app",
-    "start-time": "2022-04-14 11:00:50",
-    "end-time": "2022-04-14 11:23:50",
-    "sensor_details": {
-        "sensor_type": [
-            "temp"
-        ],
-        "sensor_location": "vindhya-block",
-        "no_of_instances": 1
+
+    "start-time": "2022-04-05 11:26:20",
+    "end-time": "2022-04-05 11:30:45",
+    "function_details":{
+        "attendance_system":{
+            "sensor_type": "camera",
+            "sensor_location": "vindhya-block",
+            "no_of_instances": 2,
+            "model_name": "attendance_prediction_model",
+            "controllers": [
+                {
+                    "controller_type": "fan",
+                    "controller_location": "vindhya-block"
+                },
+                {
+                    "controller_type": "light",
+                    "controller_location": "vindhya-block"
+                }
+            ]
+        },
+        "attention_system":{
+            "sensor_type": "camera",
+            "sensor_location": "vindhya-block",
+            "no_of_instances": 2,
+            "model_name": "attention_prediction_model"
+        }
     },
-    "controller_details": {
-        "sensor_type": "ac",
-        "sensor_location": "vindhya-block"
-    },
-    "model_details": {
-        "model_name": "ac_prediction_model"
-    }
+    "sensor_details":[
+        {
+            "sensor_type": "camera",
+            "sensor_location": "vindhya-block",
+            "no_of_instances": 2
+        },
+        {
+            "sensor_type": "camera",
+            "sensor_location": "vindhya-block",
+            "no_of_instances": 2
+        },
+        {
+            "sensor_type": "temp",
+            "sensor_location": "vindhya-block",
+            "no_of_instances": 1
+        },
+        {
+            "sensor_type": "smoke",
+            "sensor_location": "vindhya-block",
+            "no_of_instances": 1
+        }
+    ],
+    "controller_details": [
+        {
+            "sensor_type": "ac",
+            "sensor_location": "vindhya-block"
+        },
+        {
+            "sensor_type": "fan",
+            "sensor_location": "vindhya-block"
+        },
+        {
+            "sensor_type": "light",
+            "sensor_location": "vindhya-block"
+        },
+        {
+            "sensor_type": "pc",
+            "sensor_location": "vindhya-block"
+        }
+    ],
+    "model_details": [
+        {
+            "model_name": "attendance_prediction_model",
+            "model_ip": "127.0.0.1",
+            "model_port": "5003"
+        },
+        {
+            "model_name": "attention_prediction_model",
+            "model_ip": "127.0.0.1",
+            "model_port": "5004"
+        },
+        {
+            "model_name": "fire_prediction_model",
+            "model_ip": "127.0.0.1",
+            "model_port": "5005"
+        }
+    ]
+
 }

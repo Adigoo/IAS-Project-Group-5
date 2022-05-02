@@ -21,7 +21,6 @@ instancesdb = mydb["SensorInstances"]
 # instancesdb = mydb["SensorInstances"]
 # types = mydb["SensorTypes"]
 
-
 # Deprecated
 # def register_sensor_type(sensor_type):
 #     types = mydb["SensorTypes"]
