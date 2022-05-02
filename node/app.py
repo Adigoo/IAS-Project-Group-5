@@ -187,7 +187,7 @@ def runApp():
 
 
 
-        return jsonify(model_name=model_name, container_name=f"container_{model_name}")
+        return jsonify(container_name=f"container_{model_name}")
     else:
         # for APP scheduling
         fpath = received_json['fpath']

@@ -48,6 +48,7 @@ def runImg():
     logging.warning("got request from scheduler")
     recieved_json = request.get_json()
     model_port=recieved_json['port_num']
+    model_name=recieved_json['model_name']
     
 
     logging.warning(f"recieved_json = {recieved_json}")
@@ -89,7 +90,7 @@ def runImg():
                             json=recieved_json).json()
         
         recieved_json['container_name'] = res['container_name']
-        recieved_json['model_name'] = res['model_name']
+        recieved_json['model_name'] = model_name
         recieved_json['vm_ip'] = actual_ip
         recieved_json['model_port'] = model_port
         recieved_json['_id'] = res['container_name']
