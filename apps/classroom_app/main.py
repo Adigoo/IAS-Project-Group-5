@@ -1,11 +1,16 @@
+from concurrent.futures import thread
+from curses import meta
 from flask import Flask, render_template
 import threading
 import api
 from time import sleep
+from datetime import datetime
+now = datetime.now()
 
 app = Flask()
 
-present_list = []
+present_list = set()
+class_attention = ""
 students_dict = {0 : 'Adriana Lima',1 : 'Alex Lawther',2: 'Alexandra Daddario',
 3 : 'Alvaro Morte',4 : 'Amanda Crew',5 : 'Andy Samberg',
 6 : 'Anne Hathaway',7 : 'Anthony Mackie',8: 'alycia dabnem carey',
@@ -49,7 +54,7 @@ def attendance_system():
         sensor_data = api.get_sensor_data("attendance_system")
         predictions = api.predict("attendance_system",sensor_data)
         for i in predictions:
-            present_list.append(students_dict[i])
+            present_list.add(students_dict[i])
 
         class_attention = attention_system()
         # Send notification
@@ -86,44 +91,67 @@ def attention_system():
     return average_attentiveness
             
 
-def peripheral_control_system():
-    while(1):
+# def peripheral_control_system():
+#     while(1):
         
-        # sensor_name = "Camera"
-        # model_name = "model1"
-        predictions = []
-        sensor_data = api.get_sensor_data("peripheral_control_system")
-        for img in sensor_data:
-            predictions.append(api.predict("peripheral_control_system",img))
-        # model_name2 = "model2"
+#         # sensor_name = "Camera"
+#         # model_name = "model1"
+#         predictions = []
+#         sensor_data = api.get_sensor_data("peripheral_control_system")
+#         for img in sensor_data:
+#             predictions.append(api.predict("peripheral_control_system",img))
+#         # model_name2 = "model2"
 
-        # get_attentiveness = api.predict(model_name2,sensor_data)
+#         # get_attentiveness = api.predict(model_name2,sensor_data)
 
-        # api.controllerAction(get_attentiveness,"Light_controller")
+#         # api.controllerAction(get_attentiveness,"Light_controller")
                 
-        sleep(60)
+#         sleep(60)
 
+def change_value():
 
-app.route('/')
+    global attentive_time
+    global average_attentiveness
+
+    while(1):
+        attentive_time+=1
+        average_attentiveness+=1
+        sleep(2)
+    
+
+@app.route('/')
 def home():
     return render_template("index.html")
 
-app.route('/attendance')
+@app.route('/startClass', methods = ["GET"])
 def attendance():
+    return 1
     pass
 
-app.route('/attention')
+@app.route('/endclass', methods = ["GET"])
+def endclass():
+    pass
+
+
+@app.route('/monitorPeripheral')
 def attention():
-    pass
+    global attentive_time
+    global average_attentiveness
+    return render_template("attention.html", attentive_time=attentive_time, average_attentiveness=average_attentiveness)
 
-app.route('/peripherals')
+
+@app.route('/monitorFan')
 def peripherals():
     pass
 
 
 if __name__ == "__main__":
-    t1 = threading.Thread(target = fire_detection)
-    t2 = threading.Thread(target = student_motion_detect)
-    t3 = threading.Thread(target = attention_detection)
-    
-    app.run(port=5000)
+    t1 = threading.Thread(target = fan_control_system)
+    t2 = threading.Thread(target = peripheral_control_system)
+    t3 = threading.Thread(target = attendance_system)
+    t4 = threading.Thread(target = change_value)
+    t4.start()
+    t1.start()
+    t2.start()
+    t3.start()
+    app.run(debug=True, port="0.0.0.0")
