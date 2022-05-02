@@ -185,7 +185,9 @@ def runApp():
         logging.warning("Model container started")
         # logging.warning(f"output of run ommand = {out}")
 
-        return jsonify(container_id=f"container_{model_name}")
+
+
+        return jsonify(model_name=model_name, container_name=f"container_{model_name}")
     else:
         # for APP scheduling
         fpath = received_json['fpath']

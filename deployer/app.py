@@ -66,6 +66,7 @@ def runImg():
     #url = req['url']
     logging.warning(f"got back from node manager, response =  {node_endpoint}")
     recieved_json['url'] = node_endpoint
+    actual_ip = node_endpoint.split(":")[1].replace("/", "")
     logging.warning(f'splitted = {node_endpoint.split(":")[1].replace("/", "")}')
     
 
@@ -87,13 +88,19 @@ def runImg():
         res = requests.post(url=url_to_request,
                             json=recieved_json).json()
         
-        recieved_json['container_id'] = res['container_id']
+        recieved_json['container_name'] = res['container_name']
+        recieved_json['model_name'] = res['model_name']
+        recieved_json['vm_ip'] = actual_ip
+        recieved_json['model_port'] = model_port
+        recieved_json['_id'] = res['container_name']
 
-        logging.warning(f"recieved_json['container_id'] = {recieved_json['container_id']}")
+        logging.warning(f"recieved_json['container_name'] = {recieved_json['container_name']}")
         # recieved_json["config_id"] = recieved_json["config_id"])
         try:
             db.deployer_log.insert_one(recieved_json)
-        except:
+            
+        except Exception as er:
+            logging.warning(er)
             pass
     
 
