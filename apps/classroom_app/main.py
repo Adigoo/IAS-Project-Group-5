@@ -5,15 +5,19 @@ from time import sleep
 
 app = Flask()
 
-def fire_detection():
-    pass
+def fan_control_system():
+    sensor_data = api.get_sensor_data("fan_control_system")
+    prediction = api.predict("fan_control_system", sensor_data)
+    response = api.controller_action("fan_control_system", prediction)
+    print(response)
 
-def student_motion_detect():
+    
+def peripheral_control_system():
     while(1):
         # sensor_name = "Camera_sensor"
-        sensor_data = api.get_sensor_data("")
+        sensor_data = api.get_sensor_data("peripheral_control_system")
 
-        model_name = "StudentMD_model"
+        # model_name = "StudentMD_model"
         StudentMD_pred_data = api.predict(sensor_data,model_name)
 
         PC_action = StudentMD_pred_data['pc']
@@ -28,30 +32,35 @@ def student_motion_detect():
 
         sleep(60)
 
-
-def attendance_sytem():
+def attendance_system():
+        
     # sensor_name = "Camera"
     # model_name = "model1"
-    sensor_data = api.get_sensor_data("attention_detection")
     predictions = []
+    sensor_data = api.get_sensor_data("attendance_system")
     for img in sensor_data:
-        predictions.append(api.predict("attention_detection", sensor_data))
+        predictions.append(api.predict("attendance_system",img))
+
+    # Send notification
+
+
     # model_name2 = "model2"
 
     # get_attentiveness = api.predict(model_name2,sensor_data)
 
     # api.controllerAction(get_attentiveness,"Light_controller")
-                
+            
 
 
-def attention_detection():
+def attention_system():
     while(1):
+        
         # sensor_name = "Camera"
         # model_name = "model1"
-        sensor_data = api.get_sensor_data("attention_detection")
         predictions = []
+        sensor_data = api.get_sensor_data("attention_system")
         for img in sensor_data:
-            predictions.append(api.predict("attention_detection", sensor_data))
+            predictions.append(api.predict("attention_system",img))
         # model_name2 = "model2"
 
         # get_attentiveness = api.predict(model_name2,sensor_data)
@@ -59,6 +68,24 @@ def attention_detection():
         # api.controllerAction(get_attentiveness,"Light_controller")
                 
         sleep(60)
+
+def peripheral_control_system():
+    while(1):
+        
+        # sensor_name = "Camera"
+        # model_name = "model1"
+        predictions = []
+        sensor_data = api.get_sensor_data("peripheral_control_system")
+        for img in sensor_data:
+            predictions.append(api.predict("peripheral_control_system",img))
+        # model_name2 = "model2"
+
+        # get_attentiveness = api.predict(model_name2,sensor_data)
+
+        # api.controllerAction(get_attentiveness,"Light_controller")
+                
+        sleep(60)
+
 
 app.route('/')
 def home():
