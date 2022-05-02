@@ -8,7 +8,7 @@ from io import BytesIO
 from PIL import Image
 import numpy as np
 
-class Peripheral:
+class ModelClass:
     def preprocess(self, img):
         stream = BytesIO(img)
         image = Image.open(stream).convert("RGB")
@@ -60,7 +60,7 @@ class Peripheral:
             return 1
         return 0
 
-obj = Peripheral()
+obj = Model()
 
 with open ("peripheral_control_model.pkl","wb") as handle:
     pickle.dump(obj,handle)

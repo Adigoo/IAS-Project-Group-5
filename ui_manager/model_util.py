@@ -74,6 +74,7 @@ def generate_server_file(port_num, model_name):
     f.write('import pickle\n')
     f.write('import pandas as pd\n')
     f.write('import numpy as np\n')
+    f.write('from model import ModelClass')
     f.write('app=Flask(__name__)\n')
     f.write('model = None\n')
     f.write("@app.route('/predict',methods=['POST'])\n")
