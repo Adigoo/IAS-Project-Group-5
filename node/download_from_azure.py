@@ -37,7 +37,7 @@ def download_source(source_name, source_dir, desti_dir, c_str, s_name, space = "
     sorce_info = None
     
     for ele in dir_client.list_directories_and_files():
-        logging.warning(f"ele = {ele}")
+        logging.warning(f"ele = {ele['name']}")
         if ele['name'] == source_name:
             logging.warning("NAME MATCHED")
             sorce_info = ele
