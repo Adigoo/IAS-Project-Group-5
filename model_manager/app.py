@@ -9,6 +9,7 @@ import pickle
 import numpy as np
 import download_from_azure
 import shutil
+import requests
 from azurerepo2 import create_directory, upload_local_file
 
 from azure.core.exceptions import (
@@ -212,46 +213,62 @@ def download_model_directory(model_name):
 
 
 
-@app.route('/predict', methods=['POST'])
-def predictOutput():
+# @app.route('/predict', methods=['POST'])
+# def predictOutput():
+#     json_data = request.get_json()
+    # model_name = json_data['model_name']
+    # ip_data = json_data['data']
+    # ip_data = np.array(ip_data)
+
+#     # model_name = "ac_prediction_model"
+
+#     logging.warning(f"MODEL NAME = {model_name}")
+#     # logging.warning(f"MODEL NAME = {model_name}")
+#     # logging.warning(f"MODEL NAME = {model_name}")
+#     # logging.warning(f"MODEL NAME = {model_name}")
+#     # logging.warning(f"MODEL NAME = {model_name}")
+#     # logging.warning(f"MODEL NAME = {model_name}")
+#     # logging.warning(f"MODEL NAME = {model_name}")
+
+#     shutil.rmtree("./model_repo")
+
+#     download_model_directory(model_name)
+
+#     pickle_file = f"model_repo/{model_name}/{model_name}.pkl"
+#     model_config_file = f"model_repo/{model_name}/model_config.json"
+#     logging.warning(pickle_file)
+#     pf=open(pickle_file,"rb")
+#     AI_model = pickle.load(pf)
+
+#     # Prediction
+#     logging.warning("ip_data:", ip_data)
+#     prediction_data = AI_model.predict(ip_data)
+#     prediction_data = prediction_data.tolist()
+#     logging.warning("pred data:", prediction_data)
+#     # Response
+#     jsonObj = {
+#         "predicted_value": prediction_data
+#     }
+#     logging.warning(type(prediction_data))
+#     logging.warning(prediction_data)
+
+#     return json.dumps(jsonObj)
+
+
+@app.route('predict', methods=["POST, GET"])
+def predict():
     json_data = request.get_json()
-    model_name = json_data['model_name']
-    ip_data = json_data['data']
-    ip_data = np.array(ip_data)
+    deployer_log = mydb["deployer_log"]
+    model_details = deployer_log.find_one({"_id": "container_"+json_data['model_name']})
+    
+    model_url = "http://"+model_details["vm_ip"]+":"+model_details["port_num"] + "/"
+    ip_data = np.array(json_data['data'])
+    response = requests.post(url=model_url+"predict", json={
+        "input": ip_data
+    }).content
+    print(response)
+    return "test"
 
-    # model_name = "ac_prediction_model"
-
-    logging.warning(f"MODEL NAME = {model_name}")
-    logging.warning(f"MODEL NAME = {model_name}")
-    logging.warning(f"MODEL NAME = {model_name}")
-    logging.warning(f"MODEL NAME = {model_name}")
-    logging.warning(f"MODEL NAME = {model_name}")
-    logging.warning(f"MODEL NAME = {model_name}")
-    logging.warning(f"MODEL NAME = {model_name}")
-
-    shutil.rmtree("./model_repo")
-
-    download_model_directory(model_name)
-
-    pickle_file = f"model_repo/{model_name}/{model_name}.pkl"
-    model_config_file = f"model_repo/{model_name}/model_config.json"
-    logging.warning(pickle_file)
-    pf=open(pickle_file,"rb")
-    AI_model = pickle.load(pf)
-
-    # Prediction
-    logging.warning("ip_data:", ip_data)
-    prediction_data = AI_model.predict(ip_data)
-    prediction_data = prediction_data.tolist()
-    logging.warning("pred data:", prediction_data)
-    # Response
-    jsonObj = {
-        "predicted_value": prediction_data
-    }
-    logging.warning(type(prediction_data))
-    logging.warning(prediction_data)
-
-    return json.dumps(jsonObj)
 
 
 if __name__ == '__main__':
