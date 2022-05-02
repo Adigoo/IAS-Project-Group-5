@@ -34,7 +34,8 @@ PUBLIC_IP_ADDRESS=$(az vm create --resource-group $RESOURCE_GROUP_NAME \
   --verbose \
   --authentication-type all\
   --generate-ssh-keys\
-  --admin-password Abc@12345xyz\
+  --admin-username ias_user\
+  --admin-password Ias@12345678\
   --query 'publicIpAddress' -o json)
 VM_PUBLIC_IPs+=($PUBLIC_IP_ADDRESS)
 az vm open-port --port 22 --resource-group $RESOURCE_GROUP_NAME --name $vm_name --priority 400
@@ -109,6 +110,14 @@ for ip in "${VM_PUBLIC_IPs[@]}"
 do
   echo "* $ip"
   ip=$(echo "$ip" | tr '"' "'")
-  echo "$ip '${VM_NAMES[$INDEX]}' $VM_ADMIN_USERNAME" > $OUTPUT_FILENAME
+  echo "$ip '${VM_NAMES[$INDEX]}' $VM_ADMIN_USERNAME" >> $OUTPUT_FILENAME
  INDEX=$((INDEX+1))
 done
+
+
+# put the ips in database
+echo "Will this execute?"
+res=$(python3 add_ips_to_db.py "${VM_NAMES[@]}" "${VM_PUBLIC_IPs[@]}");
+echo $res
+
+# END put the ips in database

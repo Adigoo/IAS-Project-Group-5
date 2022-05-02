@@ -1,6 +1,6 @@
 import sys
 
-VM_IP = sys.argv[0]
+VM_IP = sys.argv[1]
 
 lines = []
 with open("kafka_2.13-3.1.0/config/server.properties", "r") as server_properties_file:
