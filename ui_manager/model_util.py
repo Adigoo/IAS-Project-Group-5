@@ -14,10 +14,6 @@ import shutil
 import socket
 
 
-
-
-
-
 def generate_docker_file_for_model(model_name):
     app_path = "./tmp"
     # app_id = sys.argv[1]
@@ -42,7 +38,6 @@ def generate_docker_file_for_model(model_name):
 
 
 def generate_requirements():
-    
 
     app_path = "./tmp"
     # app_id = sys.argv[1]
@@ -64,7 +59,6 @@ def generate_requirements():
         f.write("Pillow\n")
         f.write("scipy\n")
         f.write("imageio\n")
-        
 
 
 def generate_server_file(port_num, model_name):
@@ -74,6 +68,7 @@ def generate_server_file(port_num, model_name):
     f.write('import sklearn\n')
     f.write('import pickle\n')
     f.write('import pandas as pd\n')
+    f.write('from model import ModelClass\n')
     f.write('import numpy as np\n')
     f.write('app=Flask(__name__)\n')
     f.write('model = None\n')
@@ -88,7 +83,7 @@ def generate_server_file(port_num, model_name):
     f.write(f'\tpo={port_num}\n')
     f.write("\tmodel=open('" + model_name + ".pkl','rb')\n")
     f.write('\tmodel=pickle.load(model)\n')
-    
+
     f.write(f'\tapp.run(host="0.0.0.0",debug=True,port={port_num})')
 
 
