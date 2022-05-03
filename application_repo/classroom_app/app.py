@@ -32,7 +32,7 @@ def fan_control_system():
         prediction = api.predict("fan_control_system", sensor_data)
         response = api.controller_action("fan_control_system", prediction)
         fan_action = response
-        sleep(60)
+        sleep(5)
 
     
 def peripheral_control_system():
@@ -49,7 +49,7 @@ def peripheral_control_system():
         # api.controllerAction(Fan_action,"Fan_controller")
         # api.controllerAction(Light_action,"Light_controller")
 
-        sleep(60)
+        sleep(5)
 
 def attendance_system():
     global average_attentiveness
@@ -68,7 +68,7 @@ def attendance_system():
 
         # Send notification
 
-        sleep(60)
+        sleep(5)
 
 
 
