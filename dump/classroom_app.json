@@ -1,6 +1,6 @@
 {
     "application-name": "classroom_app",
-    "start-time": "2022-05-03 12:22:40",
+    "start-time": "2022-05-03 12:28:50",
     "end-time": "2022-05-03 12:58:00",
     "function_details":{
         "attendance_system":{
@@ -37,6 +37,8 @@
                     "controller_location": "vindhya-classroom"
                 }
             ]
-        }
+        },
+        "model_name": "ac_prediction_model"
+
     }
 }
