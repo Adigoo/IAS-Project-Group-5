@@ -252,7 +252,7 @@ def generate_api(data):
     sensor_data += '\tresponse = requests.post(url=sensor_url+'+'"getSensorInstances"'+', json=jsonObj).content\n'
     sensor_data += '\tdata = json.loads(response.decode())\n'
     sensor_data += '\tall_instances = data["sensor_instances"]\n'
-    sensor_data += '\tsensor_instances = random.sample(all_instances, str(details["no_of_instances"]))\n'
+    sensor_data += '\tsensor_instances = random.sample(all_instances, (details["no_of_instances"]))\n'
     sensor_data += '\tdata = []\n'
     sensor_data += '\tfor i in range(len(sensor_instances)):\n'
     sensor_data += '\t\tjsonObj = {"topic_name": sensor_instances[i]}\n'
