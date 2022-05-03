@@ -226,7 +226,7 @@ def predict():
         "input": ip_data
     }).content
     print(response)
-    return "test"
+    return response
 
 
 
