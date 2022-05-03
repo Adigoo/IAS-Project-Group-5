@@ -243,7 +243,8 @@ def predict():
 
     # model_url = "http://"+model_details["vm_ip"]+":"+model_details["port_num"] + "/"
     model_url = "http://"+hardcoded_model_vm_ip+":"+port_num + "/"
-
+    logging.warning("in model_manager")
+    logging.warning(f"model_url = {model_url}")
     ip_data = np.array(json_data['data'])
     response = requests.post(url=model_url+"predict", json={
         "input": ip_data
