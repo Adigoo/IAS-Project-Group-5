@@ -1,7 +1,7 @@
 {
     "application-name": "classroom_app",
-    "start-time": "2022-05-03 11:44:30",
-    "end-time": "2022-05-03 11:48:00",
+    "start-time": "2022-05-03 11:47:00",
+    "end-time": "2022-05-03 11:58:00",
     "function_details":{
         "attendance_system":{
             "sensor_type": "camera",
