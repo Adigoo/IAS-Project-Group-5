@@ -1,11 +1,11 @@
 {
     "application-name": "classroom_app",
-    "start-time": "2022-05-03 11:13:00",
-    "end-time": "2022-05-03 11:17:00",
+    "start-time": "2022-05-03 11:21:40",
+    "end-time": "2022-05-03 11:25:00",
     "function_details":{
         "attendance_system":{
             "sensor_type": "camera",
-            "sensor_location": "vindhya-block",
+            "sensor_location": "vindhya-classroom",
             "no_of_instances": 3,
             "model_name": "attendance_prediction_model"
         },
