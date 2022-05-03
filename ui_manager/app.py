@@ -422,9 +422,28 @@ def model_upload():
                     shutil.rmtree("./tmp")
                 
                 os.mkdir("./tmp")
+                
+                model_name = filename.split('.')[0]
 
                 port_num = random.randint(40001,40007)
-                model_name = filename.split('.')[0]
+
+                # rewrite model portnums
+                if model_name == "attention_detection_model":
+                    port_num = 40001
+                    pass
+                elif model_name == "attendance_model":
+                    port_num = 40002
+                    pass
+                elif model_name == "ac_prediction_model":
+                    port_num = 40003
+                    pass
+                elif model_name == "fire_detection_model":
+                    port_num = 40004
+                    pass
+                elif model_name == "peripheral_control_model":
+                    port_num = 40005
+                    pass
+
                 model_util.generate_server_file(port_num, model_name)
                 model_util.generate_requirements()
                 model_util.generate_docker_file_for_model(model_name)

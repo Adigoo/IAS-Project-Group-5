@@ -1,6 +1,6 @@
 {
     "application-name": "classroom_app",
-    "start-time": "2022-05-03 12:34:10",
+    "start-time": "2022-05-03 12:43:00",
     "end-time": "2022-05-03 12:58:00",
     "function_details":{
         "attendance_system":{
@@ -31,14 +31,14 @@
             "sensor_type": "temp",
             "sensor_location": "vindhya-classroom",
             "no_of_instances": 1,
+            "model_name": "ac_prediction_model",
             "controllers": [
                 {
                     "controller_type": "fan",
                     "controller_location": "vindhya-classroom"
                 }
             ]
-        },
-        "model_name": "ac_prediction_model"
+        }
 
     }
 }
