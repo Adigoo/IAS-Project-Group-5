@@ -237,6 +237,8 @@ def generate_api(data):
     for function in data["function_details"]:
     # print(function)
         details = data['function_details'][function]
+        logging.warning(f"details = {details}")
+        logging.warning(f"type(details) = {type(details)}")
         definition += '\tif name == "'+ function +'":\n'
         definition += '\t\t'+function+'_details = {'
         for key, value in details.items():
