@@ -1,0 +1,5 @@
+flask_mail
+keras
+tensorflow
+opencv-python
+sklearn

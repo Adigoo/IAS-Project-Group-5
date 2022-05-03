@@ -6,19 +6,20 @@
         "attendance_system":{
             "sensor_type": "camera",
             "sensor_location": "vindhya-block",
-            "no_of_instances": 2,
+            "no_of_instances": 3,
             "model_name": "attendance_prediction_model"
         },
         "attention_system":{
             "sensor_type": "camera",
             "sensor_location": "vindhya-classroom",
-            "no_of_instances": 2,
+            "no_of_instances": 3,
             "model_name": "attention_prediction_model"
         },
         "peripheral_control_system":{
             "sensor_type": "camera",
             "sensor_location":"vindhya-classroom",
             "no_of_instances": 1,
+            "model_name": "attention_prediction_model",
             "controllers": [
                 {
                     "controller_type": "light",

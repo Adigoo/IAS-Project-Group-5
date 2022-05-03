@@ -4,17 +4,16 @@ import cv2
 import gdown
 import pickle
 from io import BytesIO
+<<<<<<< HEAD:models/attention_dectection_model/model.py
 from PIL import 
+=======
+from PIL import Image
+>>>>>>> 3e5bdd57cfe3c05241d21650fad591ee34474b2c:models/attention_dectection_model/generate_model_pickle.py
 
 
 class Attentiveness:
 
     def preprocess(self, img):
-        # img = cv2.imread(img)
-        # stream = BytesIO(img)
-        # image = Image.open(stream).convert("RGB")
-        # #print(image.shape)
-        # stream.close()
         im_bytes = base64.b64decode(img)
         im_file = BytesIO(im_bytes)
         img = Image.open(im_file)
@@ -26,7 +25,7 @@ class Attentiveness:
         return result
         pass
 
- 
+
     def predict(self, img):
         img = self.preprocessing(img)
         try: 
@@ -57,6 +56,8 @@ class Attentiveness:
                 return 0
             
             return 1
+        
+        
         return 0
 
 
@@ -65,11 +66,11 @@ class Attentiveness:
 
 obj = Attentiveness()
 print(type(obj))
-with open ("model.pkl","wb") as handle:
+with open ("attention_detection_model.pkl","wb") as handle:
     pickle.dump(obj,handle)
 
 
-file = open("model.pkl", "rb")
+# file = open("attention_detection_model.pkl", "rb")
 
-x = pickle.load(file)
-print(x.postprocess("hsahsa"))
+# x = pickle.load(file)
+# print(x.postprocess("hsahsa"))

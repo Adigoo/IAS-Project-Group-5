@@ -72,15 +72,15 @@ class FireDetection:
     return result[0]
 
 
-obj = FireDetection()
+# obj = FireDetection()
 
-pickle_file = open('model.pkl', 'wb')
-pickle.dump( obj, pickle_file )
-pickle_file.close()
+# pickle_file = open('fire_detection_model.pkl', 'wb')
+# pickle.dump( obj, pickle_file )
+# pickle_file.close()
 
 
-file = open("model.pkl", "rb")
-x = pickle.load(file)
+# file = open("fire_detection_model.pkl", "rb")
+# x = pickle.load(file)
 
 #print(x.predict(47.857214))
 #decision_tree_model.predict([[47.857214]])

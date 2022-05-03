@@ -67,12 +67,6 @@ def attendance_system():
 
         sleep(60)
 
-    # model_name2 = "model2"
-
-    # get_attentiveness = api.predict(model_name2,sensor_data)
-
-    # api.controllerAction(get_attentiveness,"Light_controller")
-            
 
 
 def attention_system():
@@ -96,23 +90,6 @@ def attention_system():
     print(average_attentiveness)
     return average_attentiveness
             
-
-# def peripheral_control_system():
-#     while(1):
-        
-#         # sensor_name = "Camera"
-#         # model_name = "model1"
-#         predictions = []
-#         sensor_data = api.get_sensor_data("peripheral_control_system")
-#         for img in sensor_data:
-#             predictions.append(api.predict("peripheral_control_system",img))
-#         # model_name2 = "model2"
-
-#         # get_attentiveness = api.predict(model_name2,sensor_data)
-
-#         # api.controllerAction(get_attentiveness,"Light_controller")
-                
-#         sleep(60)
 
 def change_value():
 
@@ -162,4 +139,4 @@ if __name__ == "__main__":
     t2.start()
     t3.start()
     t4.start()
-    app.run(debug=True, port= 8000)
+    app.run(debug=True, port= 5000)

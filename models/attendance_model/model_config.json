@@ -1,0 +1,8 @@
+{
+    "model": [
+        {
+            "model_name": "attendance_model",
+            "model_type": "computer_vision"
+        }
+    ]
+}
