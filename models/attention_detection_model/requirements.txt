@@ -1,1 +1,2 @@
 gdown
+opencv-python
