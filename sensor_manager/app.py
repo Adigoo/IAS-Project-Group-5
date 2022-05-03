@@ -66,6 +66,7 @@ def getSensorInstances():
     jsonObj = {
         "sensor_instances": sensor_instances
     }
+    print(jsonObj)
     return json.dumps(jsonObj)
 
 
