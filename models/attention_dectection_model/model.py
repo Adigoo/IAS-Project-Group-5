@@ -4,7 +4,9 @@ import cv2
 import gdown
 import pickle
 from io import BytesIO
-from PIL import Image
+from PIL import 
+
+
 class Attentiveness:
 
     def preprocess(self, img):
