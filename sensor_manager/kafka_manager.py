@@ -70,7 +70,7 @@ def consume_data(topic_name):
     data = []
     for message in consumer:
         msg = message[6].decode('utf-8')
-        data.append(float(msg))
+        data.append(msg)
         if message.offset == lastOffset - 1:
             break
 
