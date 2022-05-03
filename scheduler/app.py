@@ -74,7 +74,7 @@ def allowed_file(filename):
 
 def getCurrentTimeInIST():
     IST = pytz.timezone('Asia/Kolkata')
-    print("IST in Default Format : ", datetime.now(IST))
+    # print("IST in Default Format : ", datetime.now(IST))
     datetime_ist = datetime.now(IST)
     # print(datetime_ist.strftime('%H:%M'))
     return datetime_ist.strftime("%Y-%m-%d %H:%M:%S")
