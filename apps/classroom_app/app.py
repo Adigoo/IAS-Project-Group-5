@@ -89,7 +89,7 @@ def attention_system():
     #send notification
     print(average_attentiveness)
     return average_attentiveness
-            
+
 
 def change_value():
 
@@ -139,4 +139,4 @@ if __name__ == "__main__":
     t2.start()
     t3.start()
     t4.start()
-    app.run(debug=True, port= 5000)
+    app.run(debug=True, host="0.0.0.0", use_reloader=False,port= 5000)

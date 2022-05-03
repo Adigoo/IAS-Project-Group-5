@@ -572,14 +572,40 @@ def app_upload():
                 # zipfile = ZipFile(file._file)
                 zipfile = ZipFile(name)
                 if validate_Zip_app_service(zipfile):
-                    create_directory(connection_string, share_name, 'application_repo/' + filename.split('.')[0])
+                    # create_directory(connection_string, share_name, 'application_repo/' + filename.split('.')[0])
+
+                    # ZipFile(name).extractall(".")
+                    zipfile.extractall(".")
+
+                    logging.warning(f"splitting {file}" )
+                    logging.warning(f"splitting {file.filename.split('.')[0]}" )
+
+                    azurerepo2.upload_source(
+                        file.filename.split('.')[0],
+                        ".",
+                        "application_repo",
+                        c_str=connection_string,
+                        s_name=share_name,
+                        useless_ele = {"__pycache__"},
+                        space="   "
+                    )
+
+                    shutil.rmtree(f"./{file.filename.split('.')[0]}")
+
+
                     logging.warning(zipfile.namelist())
                     fileslist = zipfile.namelist()[1:]
                     for name in fileslist:
                         logging.warning(name)
                         newfile = zipfile.read(name)
                         logging.warning('application_repo/' + name)
-                        upload_local_file(connection_string, newfile, share_name, 'application_repo/' + name)
+                        # if(os.path.isdir(newfile))
+
+                        # IMPORTANT
+                        ##### upload_local_file(connection_string, newfile, share_name, 'application_repo/' + name)
+                        
+                        
+                        
                         #logging.warning(name.split)
                         if name.split('/')[1] == "application.json": 
                             json_data = json.loads(newfile.decode('utf-8'))

@@ -293,7 +293,7 @@ def killApp():
 
 
 if __name__ == "__main__":
-    # download_app("ac_app")
+    # download_app("classroom_app")
 
     # generate_server_file(random.randint(40000, 50000), "ac_app")
     # generate_requirements()
