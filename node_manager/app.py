@@ -127,6 +127,15 @@ def getNode():
     logging.warning(cl+"\t"+cm)
     return ke[0]
 
+@app.route("/addNode", methods=['POST', 'GET'])
+def addNode():
+    data  = request.get_json()
+    new_node_ip = data["ip"]
+    new_node_port = data["port"]
+    data['_id'] = data["ip"]
+    # nodes_collection = mydb["nodes_collection"]
+    nodes_collection.insert_one(data)
+    return "added successfully"
 
 if __name__ == "__main__":
     # logging.warning(f"resp = {get_node_for_deployment().decode()}")
