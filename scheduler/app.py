@@ -196,7 +196,7 @@ def generate_api(data):
     # data = json.load(input_file)
 
     # Import statements
-    imports = """import requests\nimport json\nimport random\n\nimport pymongo\n"""
+    imports = """import requests\nimport json, logging\nimport random\n\nimport pymongo\n"""
     output_file.write(imports)
 
     # For getting public ip
@@ -212,6 +212,7 @@ def generate_api(data):
     get_public_ip += "\n"
 
     get_public_ip += "def get_public_ip():\n"
+    get_public_ip += '\tlogging.warning("IN get_public_ip()")\n'
     get_public_ip += '\tvm_ips_coll = mydb["vm_ips"]\n'
     get_public_ip += '\tmodel_vm = vm_ips_coll.find_one({"_id": "servicevm"})\n'
     get_public_ip += '\tmodel_vm_ip = model_vm["vm_ip"]\n'
@@ -247,6 +248,7 @@ def generate_api(data):
 
 
     sensor_data = 'def get_sensor_data(name):\n'
+    sensor_data += '\tlogging.warning(in get_sensor_data())\n'
     sensor_data += '\tdetails = get_details(name)\n'
     sensor_data += '\tjsonObj = {"sensor_type": details["sensor_type"], "sensor_location": details["sensor_location"] }\n'
     sensor_data += '\tresponse = requests.post(url=sensor_url+'+'"getSensorInstances"'+', json=jsonObj).content\n'
