@@ -105,7 +105,8 @@ def upload_application():
                     zipf.write(source_path, dest)
                 
                 zipfile = ZipFile(file._file)
-                if validate_Zip_app_service(zipfile):
+                # if validate_Zip_app_service(zipfile):
+                if True:
                     create_directory(connection_string, share_name, 'application_repo/' + filename.split('.')[0])
                     logging.warning(zipfile.namelist())
                     fileslist = zipfile.namelist()[1:]

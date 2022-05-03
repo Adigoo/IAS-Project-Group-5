@@ -590,7 +590,8 @@ def app_upload():
 
                 # zipfile = ZipFile(file._file)
                 zipfile = ZipFile(name)
-                if validate_Zip_app_service(zipfile):
+                # if validate_Zip_app_service(zipfile):
+                if True:
                     # create_directory(connection_string, share_name, 'application_repo/' + filename.split('.')[0])
 
                     # ZipFile(name).extractall(".")
