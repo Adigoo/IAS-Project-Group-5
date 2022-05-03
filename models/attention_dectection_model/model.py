@@ -8,11 +8,6 @@ from PIL import Image
 class Attentiveness:
 
     def preprocess(self, img):
-        # img = cv2.imread(img)
-        # stream = BytesIO(img)
-        # image = Image.open(stream).convert("RGB")
-        # #print(image.shape)
-        # stream.close()
         im_bytes = base64.b64decode(img)
         im_file = BytesIO(im_bytes)
         img = Image.open(im_file)
