@@ -290,7 +290,7 @@ def generate_api(data):
     controller += '\t\tdata = json.loads(response.decode())\n'
     controller += '\t\tall_instances = data["control_instances"]\n'
     controller += '\t\tinstance = all_instances[0]\n'
-    controller += '\t\tjsonObj = {"sensor_type": instance["sensor_type"], "sensor_ip": instance["sensor_ip"], "sensor_port": instance["sensor_port"], "data": int(data)}\n'
+    controller += '\t\tjsonObj = {"sensor_type": instance["sensor_type"], "sensor_ip": instance["sensor_ip"], "sensor_port": instance["sensor_port"], "data": random.randint(0,2)}\n'
     controller += '\t\tresponse = requests.post(url=controller_url+'+'"performAction"'+', json=jsonObj).content\n'
     controller += '\t\tresults.append(response.decode())\n'
     controller += '\treturn results\n\n'
