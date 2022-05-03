@@ -617,7 +617,8 @@ def app_upload():
                             try:
 
                                 db1.application.insert_one(json_data)
-                            except:
+                            except Exception as er:
+                                logging.warning(er)
                                 pass
                 else:
                     return "Improper Zip format"
