@@ -7,7 +7,7 @@ from io import BytesIO
 from PIL import Image
 
 
-class Attentiveness:
+class ModelClass:
 
     def preprocess(self, img):
         im_bytes = base64.b64decode(img)
@@ -60,7 +60,7 @@ class Attentiveness:
 # img = 'g4.jpg'
 # print(detect_face(img))
 
-obj = Attentiveness()
+obj = ModelClass()
 print(type(obj))
 with open ("attention_detection_model.pkl","wb") as handle:
     pickle.dump(obj,handle)

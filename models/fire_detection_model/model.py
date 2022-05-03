@@ -15,7 +15,9 @@ import pickle
 import warnings
 import numpy as np
 warnings.filterwarnings("ignore")
-class FireDetection:
+
+
+class ModelClass:
   def __init__(self):
     self.temp_data, self.fire_alarm_data = self.generate_data()
     self.input_data = self.create_Df( )
@@ -72,11 +74,11 @@ class FireDetection:
     return result[0]
 
 
-# obj = FireDetection()
+obj = ModelClass()
 
-# pickle_file = open('fire_detection_model.pkl', 'wb')
-# pickle.dump( obj, pickle_file )
-# pickle_file.close()
+pickle_file = open('fire_detection_model.pkl', 'wb')
+pickle.dump( obj, pickle_file )
+pickle_file.close()
 
 
 # file = open("fire_detection_model.pkl", "rb")
