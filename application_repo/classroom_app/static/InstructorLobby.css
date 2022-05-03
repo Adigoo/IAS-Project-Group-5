@@ -1,0 +1,157 @@
+
+.u-section-1 .u-sheet-1 {
+  min-height: 540px;
+}
+
+.u-section-1 .u-text-1 {
+  font-size: 3.125rem;
+  font-weight: 400;
+  margin: 12px auto 0;
+}
+
+.u-section-1 .u-btn-1 {
+  letter-spacing: 1px;
+  border-style: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  background-image: none;
+  margin: 42px auto 0;
+}
+
+.u-section-1 .u-icon-1 {
+  color: rgb(255, 255, 255) !important;
+  font-size: 1.4376em;
+}
+
+.u-section-1 .u-group-1 {
+  min-height: 330px;
+  height: auto;
+  margin-top: 30px;
+  margin-bottom: 0;
+}
+
+.u-section-1 .u-container-layout-1 {
+  padding: 30px;
+}
+
+.u-section-1 .u-text-2 {
+  margin: 32px auto 0 0;
+}
+
+.u-section-1 .u-text-3 {
+  margin-left: 0;
+  margin-right: auto;
+  margin-bottom: 60px;
+}
+
+#container{
+  display:flex;
+  flex-wrap: wrap;
+}
+
+.team{
+  font-family: 'Open Sans Condensed', arial, sans;
+	width: 265px;
+	padding: 30px;
+	background: #FFFFFF;
+  margin-right: 35px;
+  margin-left: 50px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.team input{
+  margin-top: 3px;
+  margin-bottom: 3px; 
+}
+#submit{
+  background-color: #00b871; 
+  margin-left: 42%;
+  border: none;
+  color: white;
+  padding: 10px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #00b871;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #00b871;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+@media (max-width: 1199px) {
+  .u-section-1 .u-text-1 {
+    font-size: 3.75rem;
+  }
+
+  .u-section-1 .u-group-1 {
+    height: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .u-section-1 .u-container-layout-1 {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@media (max-width: 575px) {
+  .u-section-1 .u-text-1 {
+    font-size: 1.5rem;
+  }
+}
