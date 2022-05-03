@@ -4,11 +4,7 @@ import cv2
 import gdown
 import pickle
 from io import BytesIO
-<<<<<<< HEAD:models/attention_dectection_model/model.py
-from PIL import 
-=======
 from PIL import Image
->>>>>>> 3e5bdd57cfe3c05241d21650fad591ee34474b2c:models/attention_dectection_model/generate_model_pickle.py
 
 
 class Attentiveness:
