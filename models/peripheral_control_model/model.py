@@ -21,7 +21,9 @@ class ModelClass:
         print(result)
         return result
     
-    def predict(self,im1,im2):
+    def predict(self,images):
+        im1 = images[0]
+        im2 = images[1]
         # read images as 2D arrays (convert to grayscale for simplicity)
         # arr = imread("frame0001.jpg").astype(float)
         im1 = self.preprocess(im1)
