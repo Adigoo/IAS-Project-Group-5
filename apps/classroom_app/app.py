@@ -9,7 +9,8 @@ now = datetime.now()
 
 app = Flask(__name__)
 
-present_list = set(["asdas","asdasd","asd"])
+present_list = set(["Adrima Lima","Alex Lawther","Alexandra Daddario","Alvaro Morte", "Amanda Crew","Andy Samberg"
+                    "Anne Hathaway", "Anthony Mackie", "alycia dabnem carey", "amber heard" ])
 class_attention = ""
 students_dict = {0 : 'Adriana Lima',1 : 'Alex Lawther',2: 'Alexandra Daddario',
 3 : 'Alvaro Morte',4 : 'Amanda Crew',5 : 'Andy Samberg',

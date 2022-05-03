@@ -196,13 +196,31 @@ def generate_api(data):
     # data = json.load(input_file)
 
     # Import statements
-    imports = """import requests\nimport json\nimport random\n\n"""
+    imports = """import requests\nimport json\nimport random\n\nimport pymongo\n"""
     output_file.write(imports)
 
     # For getting public ip
-    get_public_ip = "def get_public_ip():\n"
-    get_public_ip += '\tresp = requests.get("http://api.ipify.org/").content.decode()\n'
-    get_public_ip += "\treturn resp\n\n"
+
+    get_public_ip = "\n"
+
+    get_public_ip += 'client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"\n'
+    get_public_ip += 'db_name = "ias_database"\n'
+    get_public_ip += 'client = pymongo.MongoClient(client)\n'
+    get_public_ip += 'mydb = client[db_name]\n'
+
+
+    get_public_ip += "\n"
+
+    get_public_ip += "def get_public_ip():\n"
+    get_public_ip += '\tvm_ips_coll = mydb["vm_ips"]\n'
+    get_public_ip += '\tmodel_vm = vm_ips_coll.find_one({"_id": "servicevm"})\n'
+    get_public_ip += '\tmodel_vm_ip = model_vm["vm_ip"]\n'
+    get_public_ip += '\tmodel_vm_ip = model_vm_ip.replace(\'"\', "")\n'
+    get_public_ip += '\tmodel_vm_ip = model_vm_ip.replace("\'", "")\n'
+
+
+    # get_public_ip += '\tresp = requests.get("http://api.ipify.org/").content.decode()\n'
+    get_public_ip += "\treturn model_vm_ip\n\n"
     output_file.write(get_public_ip)
 
     # Storing URLs
@@ -272,6 +290,7 @@ def generate_api(data):
 
     output_file.write(controller)
 
+generate_api()
 
 @app.route("/schedule_model_request", methods=["POST"])
 def schedule_model_request():
@@ -359,13 +378,14 @@ def upload_file():
 
 
 if __name__ == "__main__":
+
     t1 = threading.Thread(target=check_in_time)
     t2 = threading.Thread(target=check_out_time)
-    t1.start()
-    t2.start()
+    # t1.start()
+    # t2.start()
 
     service_ports = services_config_coll.find()
 
     scheduler_service_port = service_ports[0]['scheduler_service']
 
-    app.run(debug=True,use_reloader=False, host="0.0.0.0", port=scheduler_service_port)
+    # app.run(debug=True,use_reloader=False, host="0.0.0.0", port=scheduler_service_port)
