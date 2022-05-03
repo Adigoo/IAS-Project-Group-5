@@ -1,14 +1,34 @@
 {
-    "app_name": "classroom_app",
-    "model_type": "attention_prediction_model",
-    "sensor": [
-        {
-            "sensor_type": "temp"
+    "application-name": "classroom_app",
+    "function_details":{
+        "attendance_system":{
+            "sensor_type": "camera",
+            "model_name": "attendance_prediction_model"
+        },
+        "attention_system":{
+            "sensor_type": "camera",
+            "model_name": "attention_prediction_model"
+        },
+        "peripheral_control_system":{
+            "sensor_type": "camera",
+            "model_name": "attention_prediction_model",
+            "controllers": [
+                {
+                    "controller_type": "light",
+                    "controller_location": "vindhya-classroom"
+                }
+            ]
+        },
+        "fan_control_system": {
+            "sensor_type": "temp",
+            "model_name": "ac_prediction_model",
+            "controllers": [
+                {
+                    "controller_type": "fan",
+                    "controller_location": "vindhya-classroom"
+                }
+            ]
         }
-    ],
-    "controller": [
-        {
-            "sensor_type": "ac"
-        }
-    ]
+
+    }
 }

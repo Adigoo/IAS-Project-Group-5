@@ -1,8 +1,20 @@
 {
-    "model": [
-        {
-            "model_name": "fire_detection_model",
-            "model_type": "decision_tree"
+    
+    "model_name": "fire_detection_model",
+    "model_type": "decision_tree",
+    "methods":{
+        "preprocess" : {
+            "input_type": "Bytes",
+            "output_type": "numpy.ndarray"
+        },
+        "predict": {
+            "input_type": "numpy.ndarray",
+            "output_type": "int"
+        },
+        "postprocess": {
+            "input_type": "int",
+            "output_type": "string"
         }
-    ]
+    }
+
 }

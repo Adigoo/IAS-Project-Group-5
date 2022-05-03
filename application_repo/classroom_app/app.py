@@ -19,8 +19,8 @@ students_dict = {0 : 'Adriana Lima',1 : 'Alex Lawther',2: 'Alexandra Daddario',
 
 average_attentiveness = 0
 attentive_time = 0
-fan_action = ""
-temp = ""
+fan_action = "Fan Off"
+temp = "10"
 p_action = ""
 
 def fan_control_system():

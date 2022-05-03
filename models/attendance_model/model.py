@@ -34,10 +34,11 @@ class ModelClass:
     def postprocess(self,result):
             # print(result)
             return result
-            pass
+            
     
     def predict(self, image1):
         dat= []
+        result = []
 
         image1p = self.preprocess(image1)
         
@@ -45,10 +46,9 @@ class ModelClass:
 
         
         # load model
-        # model = pickle.load(open('finalized_model.sav','rb'))
+        model = pickle.load(open('finalized_model.sav','rb'))
         a = np.array(dat)
         
-        result = []
         result.append(img_annotation)
 
         return json.dumps(result)

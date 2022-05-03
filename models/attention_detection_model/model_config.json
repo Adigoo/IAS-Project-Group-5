@@ -1,8 +1,20 @@
 {
-    "model": [
-        {
-            "model_name": "attention_detection_model",
-            "model_type": "computer_vision"
+    
+    "model_name": "attention_detection_model",
+    "model_type": "computer_vision",
+    "methods":{
+        "preprocess" : {
+            "input_type": "Image",
+            "output_type": "numpy.ndarray"
+        },
+        "predict": {
+            "input_type": "numpy.ndarray",
+            "output_type": "int"
+        },
+        "postprocess": {
+            "input_type": "int",
+            "output_type": "string"
         }
-    ]
+    }
+
 }

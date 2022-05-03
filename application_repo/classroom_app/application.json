@@ -1,5 +1,8 @@
 {
     "app_name": "classroom_app",
+    "functions": {
+        
+    },
     "model_type": "attention_prediction_model",
     "sensor": [
         {

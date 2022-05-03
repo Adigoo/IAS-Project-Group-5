@@ -19,7 +19,7 @@ class ModelClass:
     def postprocess(self,result):
         print(result)
         return result
-        pass
+        
 
 
     def predict(self, img):
