@@ -11,7 +11,7 @@ import pymongo
 
 
 
-class ModelCLass:
+class ModelClass:
 
     def preprocess(self, img):
         stream = BytesIO(img)
@@ -40,9 +40,7 @@ class ModelCLass:
         dat= []
 
         image1p = self.preprocess(image1)
-        # model = preprocessing.vgg_face()
-        # print(type(image1p))
-
+        
         img_annotation = random.randint(0, 10)
 
         
@@ -57,7 +55,7 @@ class ModelCLass:
 
 
 
-obj = ModelCLass()
+obj = ModelClass()
 print(type(obj))
 with open ("attendance_model.pkl","wb") as handle:
     pickle.dump(obj,handle)
