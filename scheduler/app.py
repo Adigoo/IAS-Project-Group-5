@@ -248,7 +248,7 @@ def generate_api(data):
 
 
     sensor_data = 'def get_sensor_data(name):\n'
-    sensor_data += '\tlogging.warning(in get_sensor_data())\n'
+    sensor_data += '\tlogging.warning("in get_sensor_data()")\n'
     sensor_data += '\tdetails = get_details(name)\n'
     sensor_data += '\tjsonObj = {"sensor_type": details["sensor_type"], "sensor_location": details["sensor_location"] }\n'
     sensor_data += '\tresponse = requests.post(url=sensor_url+'+'"getSensorInstances"'+', json=jsonObj).content\n'
