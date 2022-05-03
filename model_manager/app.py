@@ -180,6 +180,7 @@ def uploadModel():
     return render_template('index.html')
 """
 
+
 def download_model_directory(model_name):
     share_name = "ias-storage"
     connection_string = "DefaultEndpointsProtocol=https;AccountName=iasproject;AccountKey=QmnE09E9Cl6ywPk8J31StPn5rKPy+GnRNtx3M5VC5YZCxAcv8SeoUHD2o1w6nI1cDXgpPxwx1D9Q18bGcgiosQ==;EndpointSuffix=core.windows.net"
@@ -212,22 +213,43 @@ def download_model_directory(model_name):
     )
 
 
-
-
 @app.route('/predict', methods=["POST, GET"])
 def predict():
     json_data = request.get_json()
-    deployer_log = mydb["deployer_log"]
-    model_details = deployer_log.find_one({"_id": "container_"+json_data['model_name']})
+    model_name = json_data['model_name']
+    # rewrite model portnums
+    if model_name == "attention_detection_model":
+        port_num = 40001
+        pass
+    elif model_name == "attendance_model":
+        port_num = 40002
+        pass
+    elif model_name == "ac_prediction_model":
+        port_num = 40003
+        pass
+    elif model_name == "fire_detection_model":
+        port_num = 40004
+        pass
+    elif model_name == "peripheral_control_model":
+        port_num = 40005
+        pass
+
     
-    model_url = "http://"+model_details["vm_ip"]+":"+model_details["port_num"] + "/"
+    deployer_log = mydb["deployer_log"]
+    model_details = deployer_log.find_one(
+        {"_id": "container_"+json_data['model_name']})
+
+    hardcoded_model_vm_ip = "20.204.64.34"
+
+    # model_url = "http://"+model_details["vm_ip"]+":"+model_details["port_num"] + "/"
+    model_url = "http://"+hardcoded_model_vm_ip+":"+port_num + "/"
+
     ip_data = np.array(json_data['data'])
     response = requests.post(url=model_url+"predict", json={
         "input": ip_data
     }).content
     print(response)
     return response
-
 
 
 if __name__ == '__main__':
@@ -238,4 +260,5 @@ if __name__ == '__main__':
 
     model_service_port = service_ports[0]['model_service']
 
-    app.run(debug=True, use_reloader=False,host='0.0.0.0', port=model_service_port)
+    app.run(debug=True, use_reloader=False,
+            host='0.0.0.0', port=model_service_port)
