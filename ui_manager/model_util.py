@@ -28,8 +28,8 @@ def generate_docker_file_for_model(model_name):
         f.write("WORKDIR /tmp\n")
         f.write("COPY requirements.txt requirements.txt\n")
         f.write("RUN apt-get update\n")
-        f.write("RUN apt-get install python3-opencv\n")
-        f.write("RUN apt-get install ffmpeg libsm6 libxext6  -y\n")
+        f.write("RUN apt-get install -y opencv-python\n")
+        f.write("RUN apt-get install -y ffmpeg libsm6 libxext6  -y\n")
         f.write(
             "RUN pip3 install --no-cache-dir -r requirements.txt\n")
         f.write("COPY . .\n")
