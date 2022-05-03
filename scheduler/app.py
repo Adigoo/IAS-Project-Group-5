@@ -274,7 +274,7 @@ def generate_api(data):
     predict += "\tlogging.warning('printing model_url')\n"
     predict += "\tlogging.warning(model_url)\n"
     predict += '\tresponse = requests.post(url=model_url+'+'"predict"'+', json=jsonObj).content\n'
-    predict += '\tdata = json.loads(response.decode())\n'
+    # predict += '\tdata = json.loads(response.decode())\n'
     predict += '\tprediction = data["predicted_value"]\n'
     predict += '\treturn prediction\n\n'
     # print(predict)
