@@ -8,13 +8,10 @@ import numpy as np
 from io import BytesIO
 from PIL import Image
 import pymongo
-import preprocessing
 
 
 
-class AttendanceModel:
-
-
+class ModelCLass:
 
     def preprocess(self, img):
         stream = BytesIO(img)
@@ -38,9 +35,6 @@ class AttendanceModel:
             # print(result)
             return result
             pass
-
-    
-
     
     def predict(self, image1):
         dat= []
@@ -63,7 +57,7 @@ class AttendanceModel:
 
 
 
-obj = AttendanceModel()
+obj = ModelCLass()
 print(type(obj))
 with open ("attendance_model.pkl","wb") as handle:
     pickle.dump(obj,handle)
