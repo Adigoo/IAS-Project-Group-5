@@ -290,7 +290,6 @@ def generate_api(data):
 
     output_file.write(controller)
 
-generate_api()
 
 @app.route("/schedule_model_request", methods=["POST"])
 def schedule_model_request():
@@ -381,11 +380,11 @@ if __name__ == "__main__":
 
     t1 = threading.Thread(target=check_in_time)
     t2 = threading.Thread(target=check_out_time)
-    # t1.start()
-    # t2.start()
+    t1.start()
+    t2.start()
 
     service_ports = services_config_coll.find()
 
     scheduler_service_port = service_ports[0]['scheduler_service']
 
-    # app.run(debug=True,use_reloader=False, host="0.0.0.0", port=scheduler_service_port)
+    app.run(debug=True,use_reloader=False, host="0.0.0.0", port=scheduler_service_port)
