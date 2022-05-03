@@ -28,7 +28,7 @@ def fan_control_system():
         global temp
         global fan_action
         sensor_data = api.get_sensor_data("fan_control_system")
-        temp = sensor_data
+        temp = sensor_data[-1]
         prediction = api.predict("fan_control_system", sensor_data)
         response = api.controller_action("fan_control_system", prediction)
         fan_action = response
