@@ -1,3 +1,4 @@
+import base64
 import numpy as np
 import cv2
 import gdown
@@ -10,12 +11,15 @@ class Attentiveness:
 
     def preprocess(self, img):
         # img = cv2.imread(img)
-        stream = BytesIO(img)
-        image = Image.open(stream).convert("RGB")
-        #print(image.shape)
-        stream.close()
-        image.show()
-        return np.array(self.img)
+        # stream = BytesIO(img)
+        # image = Image.open(stream).convert("RGB")
+        # #print(image.shape)
+        # stream.close()
+        im_bytes = base64.b64decode(img)
+        im_file = BytesIO(im_bytes)
+        img = Image.open(im_file)
+        img.show()
+        return np.array(img)
 
     def postprocess(self,result):
         print(result)
