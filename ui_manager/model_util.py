@@ -55,6 +55,7 @@ def generate_requirements():
         f.write("requests\n")
         f.write("gdown\n")
         f.write("opencv-python\n")
+        f.write("opencv-contirb-python\n")
         f.write("Pillow\n")
         f.write("scipy\n")
         f.write("imageio\n")
