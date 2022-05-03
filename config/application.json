@@ -1,23 +1,18 @@
 {
     "application-name": "classroom_app",
-    "start-time": "2022-05-03 15:28:10",
-    "end-time": "2022-05-03 15:58:00",
-    "function_details":{
-        "attendance_system":{
+    "function_details":[
+        {
             "sensor_type": "camera",
-            "sensor_location": "vindhya-classroom",
             "no_of_instances": 3,
             "model_name": "attendance_prediction_model"
         },
-        "attention_system":{
+        {
             "sensor_type": "camera",
-            "sensor_location": "vindhya-classroom",
             "no_of_instances": 3,
             "model_name": "attention_prediction_model"
         },
-        "peripheral_control_system":{
+        {
             "sensor_type": "camera",
-            "sensor_location":"vindhya-classroom",
             "no_of_instances": 1,
             "model_name": "attention_prediction_model",
             "controllers": [
@@ -27,11 +22,10 @@
                 }
             ]
         },
-        "fan_control_system": {
+        {
             "sensor_type": "temp",
-            "sensor_location": "vindhya-classroom",
             "no_of_instances": 1,
-            "model_name": "ac_prediction_model",
+            "model_name": "fan_control_system",
             "controllers": [
                 {
                     "controller_type": "fan",
@@ -39,6 +33,5 @@
                 }
             ]
         }
-
-    }
+    ]
 }

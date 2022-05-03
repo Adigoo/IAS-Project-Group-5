@@ -25,6 +25,8 @@ p_action = ""
 
 def fan_control_system():
     while(1):
+        global temp
+        global fan_action
         sensor_data = api.get_sensor_data("fan_control_system")
         temp = sensor_data
         prediction = api.predict("fan_control_system", sensor_data)

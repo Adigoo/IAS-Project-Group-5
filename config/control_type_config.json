@@ -1,0 +1,25 @@
+{
+    "controller_types":[
+        {
+            "sensor_type": "ac",
+            "control_functions":[
+                "switchOn",
+                "switchOff"
+            ]
+        },
+        {
+            "sensor_type": "light",
+            "control_functions":[
+                "switchOn",
+                "switchOff"
+            ]
+        },
+        {
+            "sensor_type": "fan",
+            "control_functions":[
+                "switchOn",
+                "switchOff"
+            ]
+        }
+    ]
+}

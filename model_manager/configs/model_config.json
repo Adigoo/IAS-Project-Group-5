@@ -1,0 +1,25 @@
+{
+    "model": {
+            "model_name": "attention_detection_model",
+            "model_type": "computer_vision",
+            "file_name" : "attention_detection_model.pkl"
+        },
+    "preprocess" : {
+            "input" : "bytes",
+            "output" : "np.array"
+
+    },
+    "postprocess" : {
+            "input" : "boolean",
+            "output" : "boolean"
+    },
+    "api" : {
+        "endpoints" : [
+            {
+                "endpoint" : "predict",
+                "class" : "ModelClass"
+            }
+        ]
+    }
+        
+}

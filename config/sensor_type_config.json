@@ -1,0 +1,16 @@
+{
+    "sensor_types":[
+        {
+            "sensor_type_name": "temp",
+            "output": "float"
+        },
+        {
+            "sensor_type_name": "light",
+            "output": "float"
+        },
+        {
+            "sensor_type_name": "camera",
+            "output": "bytes"
+        }
+    ]
+}
