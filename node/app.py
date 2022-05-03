@@ -12,8 +12,23 @@ import download_from_azure
 import shutil
 import socket
 import requests
+import pymongo
 
 app = Flask(__name__)
+
+
+client = "mongodb://ias_mongo_user:ias_password@cluster0-shard-00-00.doy4v.mongodb.net:27017,cluster0-shard-00-01.doy4v.mongodb.net:27017,cluster0-shard-00-02.doy4v.mongodb.net:27017/ias_database?ssl=true&replicaSet=atlas-ybcxil-shard-0&authSource=admin&retryWrites=true&w=majority"
+db_name = "ias_database"
+
+client = pymongo.MongoClient(client)
+mydb = client[db_name]
+
+
+nodes_collection = mydb["nodes_collection"]
+services_config_coll = mydb["services_config"]
+
+service_ports = services_config_coll.find()
+node_service_port = service_ports[0]['node_service']
 
 
 @app.route('/', methods=['POST'])
@@ -290,6 +305,35 @@ def killApp():
     # out = out.strip()
     # logging.warning(f"KIll app op = {out}")
     return "Killed Successfully"
+
+
+def get_service_vm_ip():
+	vm_ips_coll = mydb["vm_ips"]
+	model_vm = vm_ips_coll.find_one({"_id": "servicevm"})
+	model_vm_ip = model_vm["vm_ip"]
+	model_vm_ip = model_vm_ip.replace('"', "")
+	model_vm_ip = model_vm_ip.replace("'", "")
+	return model_vm_ip
+
+
+@app.route('/send_join_request', methods=['POST', 'GET'])
+def send_join_request():
+    try:
+        pub_ip = requests.get("http://api.ipify.org").content.decode()
+        localhost_ip_address = pub_ip
+
+        data = {
+            "ip":localhost_ip_address,
+            "port":5000
+        }
+
+        services_vm_ip = get_service_vm_ip()
+
+        requests.post(f"http://{services_vm_ip}:{node_service_port}/addNode", json=data)
+    except Exception as er:
+        logging.warning(er)
+        return "not able to add node"
+    return "successful return from send_join_request"
 
 
 if __name__ == "__main__":

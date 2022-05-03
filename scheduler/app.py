@@ -243,7 +243,7 @@ def generate_api(data):
         definition += '\t\t'+function+'_details = {'
         for key, value in details.items():
             # print(key, value)
-            definition += '"' + key + '": "' +str(value) + '",'
+            definition += '"' + key + '": ' +json.dumps(value) + ','
         definition = definition[:-1] + '}\n'
         definition += '\t\treturn '+function+'_details\n\n'
     output_file.write(definition)
@@ -273,7 +273,7 @@ def generate_api(data):
     predict += '\tjsonObj = {"data": data, "model_name": details["model_name"] }\n'
     predict += "\tlogging.warning('printing model_url')\n"
     predict += "\tlogging.warning(model_url)\n"
-    
+
     predict += '\tresponse = requests.post(url=model_url+'+'"predict"'+', json=jsonObj).content\n'
     # predict += '\tdata = json.loads(response.decode())\n'
     # predict += '\tprediction = data["predicted_value"]\n'
